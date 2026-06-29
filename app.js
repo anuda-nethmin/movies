@@ -9,7 +9,7 @@
     const IMG_BASE = 'https://image.tmdb.org/t/p/';
     const POSTER_SM = 'w342';
     const POSTER_LG = 'w500';
-    const BACKDROP = 'w1280';
+    const BACKDROP = 'original';
     const PROFILE = 'w185';
     const STAR_SVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14 2 9.27l6.91-1.01z"/></svg>';
     const PLACEHOLDER_POSTER = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='342' height='513' fill='%23161630'%3E%3Crect width='342' height='513'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' fill='%235a5a72' font-family='Inter,sans-serif' font-size='14'%3ENo Image%3C/text%3E%3C/svg%3E`;
