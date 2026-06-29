@@ -383,7 +383,38 @@
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                         Back
                     </button>
-                    <div class="detail-backdrop-wrap">
+                    
+                    <!-- Inline Video Player -->
+                    <div id="inline-player-wrapper" class="inline-player-wrapper">
+                        <div class="player-header">
+                            <span class="now-playing-text" id="now-playing-text">NOW PLAYING</span>
+                            <div class="autoplay-toggle">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="3" fill="#000"/></svg>
+                                Autoplay next
+                            </div>
+                        </div>
+                        <div class="server-list" id="inline-server-selector">
+                            <span class="server-label">SERVERS</span>
+                            <!-- Servers injected here -->
+                        </div>
+                        <div class="video-container">
+                            <iframe id="inline-video-iframe" src="" frameborder="0" allowfullscreen allow="autoplay; fullscreen"></iframe>
+                        </div>
+                        <div class="player-footer">
+                            <div class="streaming-via">Streaming via <span id="current-server-name">VidLink</span>. If playback fails or shows ads, try a different server above.</div>
+                            <div id="next-up-container" style="display:none;">
+                                <div class="next-up-card" id="next-up-card">
+                                    <div>
+                                        <div class="next-up-label">NEXT UP</div>
+                                        <div class="next-up-title" id="next-up-title">Loading...</div>
+                                    </div>
+                                    <svg class="next-up-arrow" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="detail-backdrop-wrap" class="detail-backdrop-wrap">
                         <div class="detail-backdrop" style="background-image:url('${backdropUrl(data.backdrop_path)}')"></div>
                         <div class="detail-hero">
                             <div class="detail-poster">
@@ -416,6 +447,15 @@
                         </div>
                     </div>
 
+                    <!-- Episodes Section -->
+                    <div id="episodes-section" class="episodes-section">
+                        <div class="episodes-header">
+                            <h3>Episodes</h3>
+                            <div class="season-toggles" id="season-toggles"></div>
+                        </div>
+                        <div class="episodes-list" id="episodes-list"></div>
+                    </div>
+
                     <div class="detail-body">
                         ${data.overview ? `
                         <div class="detail-section">
@@ -444,6 +484,11 @@
                     </div>
                 </div>
                 ${footerHTML()}`;
+
+            // Initialize Video & TV logic if it's a TV show
+            if (type === 'tv' && data.number_of_seasons) {
+                initTvEpisodes(data.id, data.seasons);
+            }
 
             initCarousels();
         } catch (e) {
@@ -579,15 +624,7 @@
 
     apiInput.addEventListener('keydown', e => { if (e.key === 'Enter') apiSubmit.click(); });
 
-    // ========== VIDEO MODAL LOGIC ==========
-    const videoModal = document.getElementById('video-modal');
-    const videoIframe = document.getElementById('video-iframe');
-    const closeVideoBtn = document.getElementById('close-video-modal');
-    const serverSelector = document.getElementById('server-selector');
-    const tvControls = document.getElementById('tv-controls');
-    const seasonSelect = document.getElementById('season-select');
-    const episodeSelect = document.getElementById('episode-select');
-
+    // ========== INLINE VIDEO & TV LOGIC ==========
     const SERVERS = [
         { name: 'VidLink (Ad-Free)', getMovie: id => `https://vidlink.pro/movie/${id}?primaryColor=f5c518&autoplay=false`, getTv: (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=f5c518&autoplay=false` },
         { name: 'AutoEmbed', getMovie: id => `https://autoembed.to/movie/tmdb/${id}`, getTv: (id, s, e) => `https://autoembed.to/tv/tmdb/${id}-${s}-${e}` },
@@ -595,109 +632,178 @@
         { name: 'SuperEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` }
     ];
 
-    let currentVideoState = { id: null, type: null, serverIndex: 0, season: 1, episode: 1 };
+    let currentVideoState = { id: null, type: null, serverIndex: 0, season: 1, episode: 1, episodesData: [] };
 
-    function renderServerButtons() {
-        serverSelector.innerHTML = `<span class="control-label">SERVER:</span>` + 
-            SERVERS.map((s, i) => `<button class="server-btn ${i === currentVideoState.serverIndex ? 'active' : ''}" data-index="${i}">${s.name}</button>`).join('');
-    }
-
-    serverSelector.addEventListener('click', e => {
-        if (e.target.classList.contains('server-btn')) {
-            currentVideoState.serverIndex = parseInt(e.target.dataset.index);
-            renderServerButtons();
-            updateVideoFrame();
-        }
-    });
-
-    async function openVideo(id, type) {
-        currentVideoState.id = id;
-        currentVideoState.type = type;
+    function renderInlineServerButtons() {
+        const selector = document.getElementById('inline-server-selector');
+        if (!selector) return;
+        selector.innerHTML = `<span class="server-label">SERVERS</span>` + 
+            SERVERS.map((s, i) => `<button class="server-pill ${i === currentVideoState.serverIndex ? 'active' : ''}" data-index="${i}">${s.name}</button>`).join('');
         
-        renderServerButtons();
-
-        if (type === 'tv') {
-            tvControls.style.display = 'flex';
-            seasonSelect.innerHTML = '<option>Loading...</option>';
-            episodeSelect.innerHTML = '<option>Loading...</option>';
-            videoModal.classList.add('visible');
-            
-            try {
-                const data = await fetchDetails('tv', id);
-                // TV shows often have a "Season 0" for specials. We will just use regular numbered seasons.
-                const seasons = data.seasons ? data.seasons.filter(s => s.season_number > 0) : [];
-                const numSeasons = seasons.length > 0 ? seasons.length : (data.number_of_seasons || 1);
-                
-                seasonSelect.innerHTML = Array.from({length: numSeasons}, (_, i) => `<option value="${i+1}">Season ${i+1}</option>`).join('');
-                
-                currentVideoState.season = 1;
-                currentVideoState.episode = 1;
-                seasonSelect.value = "1";
-                await loadEpisodes(id, 1);
-            } catch (err) {
-                console.error("Failed to load seasons", err);
-            }
-        } else {
-            tvControls.style.display = 'none';
-            videoModal.classList.add('visible');
-            updateVideoFrame();
-        }
+        document.getElementById('current-server-name').textContent = SERVERS[currentVideoState.serverIndex].name;
     }
-
-    async function loadEpisodes(tvId, seasonNumber) {
-        episodeSelect.innerHTML = '<option>Loading...</option>';
-        try {
-            const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}`);
-            if (!res.ok) throw new Error('Network error');
-            const data = await res.json();
-            const numEpisodes = data.episodes ? data.episodes.length : 1;
-            episodeSelect.innerHTML = Array.from({length: numEpisodes}, (_, i) => `<option value="${i+1}">Episode ${i+1}</option>`).join('');
-            currentVideoState.episode = 1;
-            episodeSelect.value = "1";
-            updateVideoFrame();
-        } catch (err) {
-            console.error("Failed to load episodes", err);
-            // Fallback
-            episodeSelect.innerHTML = `<option value="1">Episode 1</option>`;
-            updateVideoFrame();
-        }
-    }
-
-    seasonSelect.addEventListener('change', async (e) => {
-        currentVideoState.season = e.target.value;
-        await loadEpisodes(currentVideoState.id, currentVideoState.season);
-    });
-
-    episodeSelect.addEventListener('change', (e) => {
-        currentVideoState.episode = e.target.value;
-        updateVideoFrame();
-    });
-
-    function updateVideoFrame() {
-        const server = SERVERS[currentVideoState.serverIndex];
-        const { id, type, season, episode } = currentVideoState;
-        videoIframe.src = type === 'tv' ? server.getTv(id, season, episode) : server.getMovie(id);
-    }
-
-    function closeVideo() {
-        videoModal.classList.remove('visible');
-        videoIframe.src = ''; 
-    }
-
-    closeVideoBtn.addEventListener('click', closeVideo);
-    
-    videoModal.addEventListener('click', e => {
-        if (e.target === videoModal) closeVideo();
-    });
 
     mainContent.addEventListener('click', e => {
+        // Server switching
+        if (e.target.classList.contains('server-pill')) {
+            currentVideoState.serverIndex = parseInt(e.target.dataset.index);
+            renderInlineServerButtons();
+            updateInlineVideoFrame();
+            return;
+        }
+
+        // Play Main Button
         const playBtn = e.target.closest('.play-video-btn');
         if (playBtn) {
-            const id = playBtn.dataset.id;
-            const type = playBtn.dataset.type;
-            openVideo(id, type);
+            currentVideoState.id = playBtn.dataset.id;
+            currentVideoState.type = playBtn.dataset.type;
+            currentVideoState.season = 1;
+            currentVideoState.episode = 1;
+            showInlinePlayer();
+            updateInlineVideoFrame();
+            return;
+        }
+
+        // Season Toggles
+        if (e.target.classList.contains('season-pill')) {
+            document.querySelectorAll('.season-pill').forEach(p => p.classList.remove('active'));
+            e.target.classList.add('active');
+            const sNum = parseInt(e.target.dataset.season);
+            loadEpisodesUI(currentVideoState.id, sNum);
+            return;
+        }
+
+        // Episode Card Click
+        const epCard = e.target.closest('.episode-card');
+        if (epCard) {
+            document.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+            epCard.classList.add('active');
+            
+            currentVideoState.season = parseInt(epCard.dataset.season);
+            currentVideoState.episode = parseInt(epCard.dataset.episode);
+            
+            showInlinePlayer();
+            updateInlineVideoFrame();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+        
+        // Next Up click
+        const nextUpCard = e.target.closest('.next-up-card');
+        if (nextUpCard) {
+            currentVideoState.episode++;
+            updateInlineVideoFrame();
+            updateNextUp();
+            // Also highlight the new active card
+            const nextCard = document.querySelector(`.episode-card[data-episode="${currentVideoState.episode}"]`);
+            if (nextCard) {
+                document.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+                nextCard.classList.add('active');
+            }
         }
     });
+
+    function showInlinePlayer() {
+        const wrap = document.getElementById('inline-player-wrapper');
+        const backdrop = document.getElementById('detail-backdrop-wrap');
+        if (wrap && backdrop) {
+            backdrop.style.display = 'none';
+            wrap.style.display = 'flex';
+            renderInlineServerButtons();
+        }
+    }
+
+    function updateInlineVideoFrame() {
+        const iframe = document.getElementById('inline-video-iframe');
+        const text = document.getElementById('now-playing-text');
+        if (!iframe) return;
+
+        const server = SERVERS[currentVideoState.serverIndex];
+        const { id, type, season, episode } = currentVideoState;
+        
+        if (type === 'tv') {
+            iframe.src = server.getTv(id, season, episode);
+            text.textContent = `NOW PLAYING — SEASON ${season} · EPISODE ${episode}`;
+        } else {
+            iframe.src = server.getMovie(id);
+            text.textContent = `NOW PLAYING — MOVIE`;
+        }
+        
+        updateNextUp();
+    }
+
+    function updateNextUp() {
+        const container = document.getElementById('next-up-container');
+        const titleEl = document.getElementById('next-up-title');
+        
+        if (currentVideoState.type === 'tv' && currentVideoState.episodesData.length > 0) {
+            const nextEpIndex = currentVideoState.episodesData.findIndex(ep => ep.episode_number > currentVideoState.episode);
+            if (nextEpIndex !== -1) {
+                const nextEp = currentVideoState.episodesData[nextEpIndex];
+                titleEl.textContent = `E${nextEp.episode_number} · ${nextEp.name}`;
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    async function initTvEpisodes(id, seasons) {
+        currentVideoState.id = id;
+        currentVideoState.type = 'tv';
+        
+        const section = document.getElementById('episodes-section');
+        const toggles = document.getElementById('season-toggles');
+        if (!section || !toggles) return;
+        
+        section.style.display = 'block';
+        
+        const validSeasons = seasons ? seasons.filter(s => s.season_number > 0) : [{season_number: 1}];
+        
+        toggles.innerHTML = validSeasons.map((s, i) => 
+            `<button class="season-pill ${i === 0 ? 'active' : ''}" data-season="${s.season_number}">Season ${s.season_number}</button>`
+        ).join('');
+        
+        await loadEpisodesUI(id, validSeasons[0].season_number);
+    }
+
+    async function loadEpisodesUI(tvId, seasonNumber) {
+        const list = document.getElementById('episodes-list');
+        list.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div></div>`;
+        
+        try {
+            const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}`);
+            const data = await res.json();
+            currentVideoState.episodesData = data.episodes || [];
+            
+            list.innerHTML = currentVideoState.episodesData.map((ep, i) => {
+                const thumb = ep.still_path ? `https://image.tmdb.org/t/p/w300${ep.still_path}` : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
+                const date = ep.air_date || 'Unknown Date';
+                const runtimeStr = ep.runtime ? `${ep.runtime}m` : '';
+                const isActive = (currentVideoState.season === seasonNumber && currentVideoState.episode === ep.episode_number);
+                
+                return `
+                <div class="episode-card ${isActive ? 'active' : ''}" data-season="${seasonNumber}" data-episode="${ep.episode_number}">
+                    <img src="${thumb}" class="ep-thumbnail" loading="lazy" alt="E${ep.episode_number}">
+                    <div class="ep-details">
+                        <div class="ep-header">
+                            <div class="ep-title"><span>E${ep.episode_number}</span> ${ep.name}</div>
+                            <span class="ep-mark-watched">Mark Watched</span>
+                        </div>
+                        <div class="ep-overview">${ep.overview || 'No description available for this episode.'}</div>
+                        <div class="ep-meta">${date} &nbsp;·&nbsp; ${runtimeStr}</div>
+                    </div>
+                </div>`;
+            }).join('');
+            
+            updateNextUp();
+        } catch (e) {
+            console.error(e);
+            list.innerHTML = `<p style="padding:20px;">Failed to load episodes.</p>`;
+        }
+    }
 
     // ========== INIT ==========
     async function init() {
