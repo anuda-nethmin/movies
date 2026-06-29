@@ -4,16 +4,16 @@
 
 /* ---------- CSS Variables ---------- */
 :root {
-    --bg-primary: #050505;
-    --bg-secondary: #0a0a0a;
-    --bg-surface: #111111;
-    --bg-card: #171717;
-    --bg-card-hover: #222222;
-    --bg-overlay: rgba(5, 5, 5, 0.85);
-    --accent-primary: #10b981;
-    --accent-secondary: #34d399;
-    --accent-gradient: linear-gradient(135deg, #059669, #34d399);
-    --accent-glow: rgba(16, 185, 129, 0.35);
+    --bg-primary: #0f172a;
+    --bg-secondary: #020617;
+    --bg-surface: #1e293b;
+    --bg-card: #1e293b;
+    --bg-card-hover: #334155;
+    --bg-overlay: rgba(15, 23, 42, 0.85);
+    --accent-primary: #38bdf8;
+    --accent-secondary: #94a3b8;
+    --accent-gradient: linear-gradient(135deg, #38bdf8, #0ea5e9);
+    --accent-glow: rgba(56, 189, 248, 0.35);
     --color-red: #ef4444;
     --color-green: #10b981;
     --rating-color: #f59e0b;
