@@ -22,7 +22,7 @@
     --text-muted: #5a5a72;
     --border-subtle: rgba(255, 255, 255, 0.06);
     --border-hover: rgba(139, 92, 246, 0.3);
-    --navbar-height: 80px;
+    --navbar-height: 100px;
     --mobile-nav-height: 64px;
     --card-radius: 12px;
     --transition-fast: 0.2s ease;
@@ -88,14 +88,20 @@ input { font-family: inherit; }
     align-items: center;
     gap: 16px;
     margin-bottom: 0;
+    transition: transform var(--transition-fast);
+}
+
+.sidebar-logo:hover {
+    transform: scale(1.05);
 }
 
 .custom-logo {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--accent-primary);
+    border: 3px solid var(--accent-primary);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
 }
 
 .logo-text {
