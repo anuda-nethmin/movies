@@ -627,9 +627,9 @@
     // ========== INLINE VIDEO & TV LOGIC ==========
     const SERVERS = [
         { name: 'VidLink (Ad-Free)', getMovie: id => `https://vidlink.pro/movie/${id}?primaryColor=f5c518&autoplay=false`, getTv: (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=f5c518&autoplay=false` },
+        { name: 'VidSrc.net', getMovie: id => `https://vidsrc.net/embed/movie?tmdb=${id}`, getTv: (id, s, e) => `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
         { name: 'AutoEmbed', getMovie: id => `https://autoembed.to/movie/tmdb/${id}`, getTv: (id, s, e) => `https://autoembed.to/tv/tmdb/${id}-${s}-${e}` },
-        { name: 'VidSrc.to', getMovie: id => `https://vidsrc.to/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.to/embed/tv/${id}/${s}/${e}` },
-        { name: 'SuperEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` }
+        { name: 'VidSrc.to', getMovie: id => `https://vidsrc.to/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.to/embed/tv/${id}/${s}/${e}` }
     ];
 
     let currentVideoState = { id: null, type: null, serverIndex: 0, season: 1, episode: 1, episodesData: [] };
@@ -705,9 +705,7 @@
 
     function showInlinePlayer() {
         const wrap = document.getElementById('inline-player-wrapper');
-        const backdrop = document.getElementById('detail-backdrop-wrap');
-        if (wrap && backdrop) {
-            backdrop.style.display = 'none';
+        if (wrap) {
             wrap.style.display = 'flex';
             renderInlineServerButtons();
         }
