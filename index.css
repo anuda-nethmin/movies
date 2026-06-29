@@ -227,7 +227,7 @@ input { font-family: inherit; }
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(to right, var(--bg-primary) 0%, rgba(6,6,14,0.82) 40%, rgba(6,6,14,0.3) 70%, rgba(6,6,14,0.1) 100%),
+        linear-gradient(to right, var(--bg-primary) 0%, transparent 70%),
         linear-gradient(to top, var(--bg-primary) 0%, transparent 40%);
 }
 
@@ -593,7 +593,7 @@ input { font-family: inherit; }
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(to top, var(--bg-primary) 0%, rgba(6,6,14,0.5) 50%, rgba(6,6,14,0.3) 100%),
+        linear-gradient(to top, var(--bg-primary) 0%, transparent 70%),
         linear-gradient(to right, var(--bg-primary) 0%, transparent 50%);
 }
 
