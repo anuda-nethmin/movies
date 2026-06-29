@@ -22,7 +22,7 @@
     --text-muted: #5a5a72;
     --border-subtle: rgba(255, 255, 255, 0.06);
     --border-hover: rgba(139, 92, 246, 0.3);
-    --navbar-height: 120px;
+    --navbar-height: 150px;
     --mobile-nav-height: 64px;
     --card-radius: 12px;
     --transition-fast: 0.2s ease;
@@ -96,12 +96,12 @@ input { font-family: inherit; }
 }
 
 .custom-logo {
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid var(--accent-primary);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+    box-shadow: 0 4px 20px rgba(56, 189, 248, 0.4);
 }
 
 .logo-text {
@@ -150,6 +150,20 @@ input { font-family: inherit; }
 
 .sidebar-footer {
     display: none; /* Hide on desktop for top nav */
+}
+
+.brave-tip {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 6px 16px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    background: rgba(56, 189, 248, 0.06);
+    white-space: nowrap;
+}
+
+.brave-tip strong {
+    color: var(--accent-primary);
 }
 
 .tmdb-link {
@@ -1382,12 +1396,29 @@ input { font-family: inherit; }
     }
     .hero-content, .detail-hero { padding-left: 32px; padding-right: 32px; }
     .card { flex: 0 0 155px; }
+    .inline-player-wrapper { padding: 20px 32px; }
+    .episodes-section { padding: 0 32px; }
 }
 
 @media (max-width: 768px) {
-    .sidebar-nav { display: none; } /* Hide top links on mobile */
-    #sidebar { padding: 0 20px; } /* Less padding on mobile */
+    /* --- Top Navbar becomes compact branding bar --- */
+    :root { --navbar-height: 70px; }
+    .sidebar-nav { display: none; }
+    .brave-tip { display: none; }
+    #sidebar {
+        padding: 0 16px;
+        height: var(--navbar-height);
+    }
+    .custom-logo {
+        width: 50px;
+        height: 50px;
+    }
+    .logo-text { font-size: 1.2rem; }
+
+    /* --- Bottom mobile nav --- */
     #mobile-nav { display: flex; }
+
+    /* --- Main content --- */
     #main-content {
         margin-left: 0;
         width: 100%;
@@ -1395,41 +1426,147 @@ input { font-family: inherit; }
         padding-bottom: calc(var(--mobile-nav-height) + 20px);
     }
 
+    /* --- General padding --- */
     .section, .detail-body, .search-page, .browse-page, .watchlist-page {
-        padding-left: 18px;
-        padding-right: 18px;
+        padding-left: 16px;
+        padding-right: 16px;
     }
 
-    .hero-content { padding: 0 18px 32px; }
-    .hero { height: clamp(340px, 55vh, 500px); }
-    .hero-title { font-size: 1.6rem; }
-    .hero-overview { -webkit-line-clamp: 2; font-size: 0.85rem; }
+    /* --- Hero --- */
+    .hero-content { padding: 0 16px 28px; }
+    .hero { height: clamp(300px, 50vh, 450px); }
+    .hero-title { font-size: 1.5rem; }
+    .hero-overview { -webkit-line-clamp: 2; font-size: 0.82rem; }
 
+    /* --- Detail page --- */
+    .detail-backdrop-wrap { height: clamp(250px, 40vh, 400px); }
     .detail-hero {
         flex-direction: column;
         align-items: flex-start;
-        padding: 0 18px 24px;
+        padding: 0 16px 20px;
+        gap: 20px;
     }
-    .detail-poster { width: 140px; }
-    .detail-title { font-size: 1.4rem; }
-    .back-btn { margin-left: 18px; margin-right: 18px; }
+    .detail-poster { width: 120px; }
+    .detail-title { font-size: 1.3rem; }
+    .detail-info { max-width: 100%; }
+    .detail-body { padding: 20px 16px; }
+    .back-btn { margin: 16px 16px 0; padding: 8px 14px; font-size: 0.8rem; }
 
-    .card { flex: 0 0 135px; }
-    .top10-card { flex: 0 0 120px; }
-    .top10-rank { font-size: 5rem; }
+    /* --- Inline Video Player --- */
+    .inline-player-wrapper {
+        padding: 16px;
+        max-width: 100%;
+    }
+    .player-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        margin-bottom: 14px;
+    }
+    .now-playing-text { font-size: 0.7rem; }
 
-    .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 16px 10px; }
-    .browse-title, .watchlist-title { font-size: 1.4rem; }
-    .page-footer { padding: 30px 18px; }
+    /* --- Server pills --- */
+    .server-list {
+        gap: 8px;
+        margin-bottom: 16px;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 8px;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .server-list::-webkit-scrollbar { display: none; }
+    .server-pill {
+        padding: 5px 12px;
+        font-size: 0.72rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+    .server-label { font-size: 0.68rem; flex-shrink: 0; }
+
+    /* --- Video container --- */
+    .video-container { border-radius: 8px; }
+
+    /* --- Next up card --- */
+    .next-up-card { padding: 12px 14px; }
+    .next-up-title { font-size: 0.88rem; }
+
+    /* --- Episodes --- */
+    .episodes-section {
+        padding: 0 16px;
+        margin-top: 24px;
+    }
+    .episodes-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+    .episodes-header h3 { font-size: 1.2rem; }
+    .season-toggles {
+        width: 100%;
+        overflow-x: auto;
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .season-toggles::-webkit-scrollbar { display: none; }
+    .season-pill { padding: 5px 12px; font-size: 0.78rem; }
+
+    .episode-card {
+        flex-direction: column;
+        padding: 12px;
+    }
+    .ep-thumbnail {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/9;
+        border-radius: 6px;
+    }
+    .ep-details {
+        margin-left: 0;
+        margin-top: 10px;
+    }
+    .ep-title { font-size: 0.95rem; }
+    .ep-overview { font-size: 0.8rem; -webkit-line-clamp: 2; }
+
+    /* --- Cards --- */
+    .card { flex: 0 0 130px; }
+    .top10-card { flex: 0 0 110px; }
+    .top10-rank { font-size: 4.5rem; }
+
+    /* --- Grid --- */
+    .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 14px 10px; }
+    .browse-title, .watchlist-title { font-size: 1.3rem; }
+
+    /* --- Footer --- */
+    .page-footer { padding: 24px 16px; }
+
+    /* --- Modal --- */
+    .modal-content { margin: 0 16px; padding: 28px 20px; }
+    .custom-logo-large { width: 52px; height: 52px; }
 }
 
 @media (max-width: 480px) {
+    :root { --navbar-height: 60px; }
+    .custom-logo { width: 42px; height: 42px; }
+    .logo-text { font-size: 1.1rem; }
+
     .hero-buttons { flex-direction: column; gap: 8px; }
     .hero-buttons .btn-primary, .hero-buttons .btn-secondary { width: 100%; justify-content: center; }
     .detail-buttons { flex-direction: column; gap: 8px; }
     .detail-buttons .btn-primary, .detail-buttons .btn-secondary { width: 100%; justify-content: center; }
-    .card { flex: 0 0 120px; }
-    .grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+    .card { flex: 0 0 115px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); }
+
+    .hero { height: clamp(260px, 45vh, 380px); }
+    .hero-title { font-size: 1.3rem; }
+    .hero-content { padding: 0 14px 24px; max-width: 100%; }
+
+    .detail-poster { width: 100px; }
+    .detail-title { font-size: 1.15rem; }
+
+    .server-pill { padding: 4px 10px; font-size: 0.68rem; }
+    .episodes-header h3 { font-size: 1rem; }
 }
 
 /* ---------- Animations ---------- */
