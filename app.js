@@ -402,6 +402,10 @@
                                     ${genres.map(g => `<span class="genre-pill">${g.name}</span>`).join('')}
                                 </div>
                                 <div class="detail-buttons">
+                                    <button class="btn-primary play-video-btn" data-id="${data.id}" data-type="${type}">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                        Play
+                                    </button>
                                     <button class="btn-secondary watchlist-toggle${inList ? ' in-list' : ''}" data-item='${JSON.stringify(itemObj)}'>
                                         ${inList
                                             ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> In My List'
@@ -574,6 +578,43 @@
     });
 
     apiInput.addEventListener('keydown', e => { if (e.key === 'Enter') apiSubmit.click(); });
+
+    // ========== VIDEO MODAL LOGIC ==========
+    const videoModal = document.getElementById('video-modal');
+    const videoIframe = document.getElementById('video-iframe');
+    const closeVideoBtn = document.getElementById('close-video-modal');
+
+    function openVideo(id, type) {
+        // Using vidsrc.to embed (note: ad blockers recommended for these free embeds)
+        const embedUrl = type === 'tv' 
+            ? `https://vidsrc.to/embed/tv/${id}/1/1` // Defaults to S1E1 for TV
+            : `https://vidsrc.to/embed/movie/${id}`;
+        
+        videoIframe.src = embedUrl;
+        videoModal.classList.add('visible');
+    }
+
+    function closeVideo() {
+        videoModal.classList.remove('visible');
+        videoIframe.src = ''; // Stop video from playing in background
+    }
+
+    closeVideoBtn.addEventListener('click', closeVideo);
+    
+    // Close on click outside video
+    videoModal.addEventListener('click', e => {
+        if (e.target === videoModal) closeVideo();
+    });
+
+    // Handle play button clicks dynamically
+    mainContent.addEventListener('click', e => {
+        const playBtn = e.target.closest('.play-video-btn');
+        if (playBtn) {
+            const id = playBtn.dataset.id;
+            const type = playBtn.dataset.type;
+            openVideo(id, type);
+        }
+    });
 
     // ========== INIT ==========
     async function init() {
