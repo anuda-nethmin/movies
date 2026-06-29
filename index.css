@@ -160,8 +160,8 @@ input { font-family: inherit; }
 
 /* ---------- Main Content ---------- */
 #main-content {
-    flex: 1;
     margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
     min-height: 100vh;
     padding-bottom: 60px;
 }
@@ -1374,6 +1374,7 @@ input { font-family: inherit; }
     #mobile-nav { display: flex; }
     #main-content {
         margin-left: 0;
+        width: 100%;
         padding-bottom: calc(var(--mobile-nav-height) + 20px);
     }
 
