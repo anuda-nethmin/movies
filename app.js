@@ -583,30 +583,113 @@
     const videoModal = document.getElementById('video-modal');
     const videoIframe = document.getElementById('video-iframe');
     const closeVideoBtn = document.getElementById('close-video-modal');
+    const serverSelector = document.getElementById('server-selector');
+    const tvControls = document.getElementById('tv-controls');
+    const seasonSelect = document.getElementById('season-select');
+    const episodeSelect = document.getElementById('episode-select');
 
-    function openVideo(id, type) {
-        // Using vidsrc.to embed (note: ad blockers recommended for these free embeds)
-        const embedUrl = type === 'tv' 
-            ? `https://vidsrc.to/embed/tv/${id}/1/1` // Defaults to S1E1 for TV
-            : `https://vidsrc.to/embed/movie/${id}`;
+    const SERVERS = [
+        { name: 'VidSrc', getMovie: id => `https://vidsrc.to/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.to/embed/tv/${id}/${s}/${e}` },
+        { name: 'VidSrc.me', getMovie: id => `https://vidsrc.me/embed/movie?tmdb=${id}`, getTv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
+        { name: 'SuperEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
+        { name: '2Embed', getMovie: id => `https://www.2embed.cc/embed/${id}`, getTv: (id, s, e) => `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` }
+    ];
+
+    let currentVideoState = { id: null, type: null, serverIndex: 0, season: 1, episode: 1 };
+
+    function renderServerButtons() {
+        serverSelector.innerHTML = `<span class="control-label">SERVER:</span>` + 
+            SERVERS.map((s, i) => `<button class="server-btn ${i === currentVideoState.serverIndex ? 'active' : ''}" data-index="${i}">${s.name}</button>`).join('');
+    }
+
+    serverSelector.addEventListener('click', e => {
+        if (e.target.classList.contains('server-btn')) {
+            currentVideoState.serverIndex = parseInt(e.target.dataset.index);
+            renderServerButtons();
+            updateVideoFrame();
+        }
+    });
+
+    async function openVideo(id, type) {
+        currentVideoState.id = id;
+        currentVideoState.type = type;
         
-        videoIframe.src = embedUrl;
-        videoModal.classList.add('visible');
+        renderServerButtons();
+
+        if (type === 'tv') {
+            tvControls.style.display = 'flex';
+            seasonSelect.innerHTML = '<option>Loading...</option>';
+            episodeSelect.innerHTML = '<option>Loading...</option>';
+            videoModal.classList.add('visible');
+            
+            try {
+                const data = await fetchDetails('tv', id);
+                // TV shows often have a "Season 0" for specials. We will just use regular numbered seasons.
+                const seasons = data.seasons ? data.seasons.filter(s => s.season_number > 0) : [];
+                const numSeasons = seasons.length > 0 ? seasons.length : (data.number_of_seasons || 1);
+                
+                seasonSelect.innerHTML = Array.from({length: numSeasons}, (_, i) => `<option value="${i+1}">Season ${i+1}</option>`).join('');
+                
+                currentVideoState.season = 1;
+                currentVideoState.episode = 1;
+                seasonSelect.value = "1";
+                await loadEpisodes(id, 1);
+            } catch (err) {
+                console.error("Failed to load seasons", err);
+            }
+        } else {
+            tvControls.style.display = 'none';
+            videoModal.classList.add('visible');
+            updateVideoFrame();
+        }
+    }
+
+    async function loadEpisodes(tvId, seasonNumber) {
+        episodeSelect.innerHTML = '<option>Loading...</option>';
+        try {
+            const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}`);
+            if (!res.ok) throw new Error('Network error');
+            const data = await res.json();
+            const numEpisodes = data.episodes ? data.episodes.length : 1;
+            episodeSelect.innerHTML = Array.from({length: numEpisodes}, (_, i) => `<option value="${i+1}">Episode ${i+1}</option>`).join('');
+            currentVideoState.episode = 1;
+            episodeSelect.value = "1";
+            updateVideoFrame();
+        } catch (err) {
+            console.error("Failed to load episodes", err);
+            // Fallback
+            episodeSelect.innerHTML = `<option value="1">Episode 1</option>`;
+            updateVideoFrame();
+        }
+    }
+
+    seasonSelect.addEventListener('change', async (e) => {
+        currentVideoState.season = e.target.value;
+        await loadEpisodes(currentVideoState.id, currentVideoState.season);
+    });
+
+    episodeSelect.addEventListener('change', (e) => {
+        currentVideoState.episode = e.target.value;
+        updateVideoFrame();
+    });
+
+    function updateVideoFrame() {
+        const server = SERVERS[currentVideoState.serverIndex];
+        const { id, type, season, episode } = currentVideoState;
+        videoIframe.src = type === 'tv' ? server.getTv(id, season, episode) : server.getMovie(id);
     }
 
     function closeVideo() {
         videoModal.classList.remove('visible');
-        videoIframe.src = ''; // Stop video from playing in background
+        videoIframe.src = ''; 
     }
 
     closeVideoBtn.addEventListener('click', closeVideo);
     
-    // Close on click outside video
     videoModal.addEventListener('click', e => {
         if (e.target === videoModal) closeVideo();
     });
 
-    // Handle play button clicks dynamically
     mainContent.addEventListener('click', e => {
         const playBtn = e.target.closest('.play-video-btn');
         if (playBtn) {
