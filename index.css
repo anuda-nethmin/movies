@@ -90,6 +90,14 @@ input { font-family: inherit; }
     margin-bottom: 24px;
 }
 
+.custom-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--accent-primary);
+}
+
 .logo-text {
     font-size: 1.25rem;
     font-weight: 700;
@@ -979,6 +987,15 @@ input { font-family: inherit; }
 }
 
 .modal-icon { margin-bottom: 20px; }
+
+.custom-logo-large {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--accent-primary);
+    box-shadow: 0 4px 20px var(--accent-glow);
+}
 
 .modal-content h2 {
     font-size: 1.4rem;
