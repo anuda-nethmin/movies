@@ -22,7 +22,7 @@
     --text-muted: #5a5a72;
     --border-subtle: rgba(255, 255, 255, 0.06);
     --border-hover: rgba(139, 92, 246, 0.3);
-    --navbar-height: 100px;
+    --navbar-height: 120px;
     --mobile-nav-height: 64px;
     --card-radius: 12px;
     --transition-fast: 0.2s ease;
@@ -96,8 +96,8 @@ input { font-family: inherit; }
 }
 
 .custom-logo {
-    width: 72px;
-    height: 72px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid var(--accent-primary);
