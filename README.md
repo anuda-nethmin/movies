@@ -1,4 +1,4 @@
-# Streamline — Movies & TV
+# Anuflix — Movies & TV
 
 A premium movie and TV show discovery app powered by the [TMDB API](https://www.themoviedb.org/).
 

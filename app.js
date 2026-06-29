@@ -1,5 +1,5 @@
 /* ============================================
-   Streamline — Movie & TV App Logic
+   Anuflix — Movie & TV App Logic
    ============================================ */
 (() => {
     'use strict';
@@ -222,7 +222,7 @@
     }
 
     function footerHTML() {
-        return `<footer class="page-footer">&copy; ${new Date().getFullYear()} Streamline. Data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>.</footer>`;
+        return `<footer class="page-footer">&copy; ${new Date().getFullYear()} Anuflix. Data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>.</footer>`;
     }
 
     // ========== PAGE: HOME ==========
