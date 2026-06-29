@@ -160,6 +160,14 @@ input { font-family: inherit; }
     border-radius: 20px;
     background: rgba(56, 189, 248, 0.06);
     white-space: nowrap;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+}
+
+.brave-tip:hover {
+    background: rgba(56, 189, 248, 0.15);
+    border-color: var(--accent-primary);
+    color: var(--text-primary);
 }
 
 .brave-tip strong {
