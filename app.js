@@ -88,12 +88,15 @@
             const hash = item.type === 'tv' ? `#/show/${item.id}` : `#/movie/${item.id}`;
             const subtitle = item.season ? `S${item.season} · E${item.episode}` : '';
             return `
-            <a href="${hash}" class="cw-card" data-id="${item.id}">
+            <a href="${hash}" class="cw-card" data-id="${item.id}" data-type="${item.type}">
                 <div class="cw-poster">
                     <img src="${posterUrl(item.poster_path)}" alt="${item.title}" loading="lazy">
                     <div class="cw-play-icon">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                     </div>
+                    <button class="cw-remove" data-cw-id="${item.id}" data-cw-type="${item.type}" title="Remove">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
                     <div class="cw-progress"><div class="cw-progress-bar"></div></div>
                 </div>
                 <div class="cw-info">
@@ -387,6 +390,34 @@
                     if (cwSection) cwSection.remove();
                 });
             }
+
+            // Continue Watching individual remove buttons
+            document.querySelectorAll('.cw-remove').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const id = parseInt(btn.dataset.cwId);
+                    const type = btn.dataset.cwType;
+                    let list = getContinueWatching();
+                    list = list.filter(i => !(i.id === id && i.type === type));
+                    saveContinueWatching(list);
+                    // Remove the card with animation
+                    const card = btn.closest('.cw-card');
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.8)';
+                        setTimeout(() => {
+                            card.remove();
+                            // If no items left, remove the whole section
+                            if (getContinueWatching().length === 0) {
+                                const cwSection = document.querySelector('.cw-section');
+                                if (cwSection) cwSection.remove();
+                            }
+                        }, 300);
+                    }
+                });
+            });
 
             initCarousels();
         } catch (e) {

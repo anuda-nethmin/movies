@@ -677,6 +677,33 @@ input { font-family: inherit; }
 
 .cw-card:hover .cw-play-icon { opacity: 1; }
 
+.cw-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    background: rgba(0, 0, 0, 0.75);
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all var(--transition-fast);
+    z-index: 5;
+    backdrop-filter: blur(4px);
+}
+
+.cw-card:hover .cw-remove { opacity: 1; }
+
+.cw-remove:hover {
+    background: var(--color-red);
+    transform: scale(1.15);
+}
+
 .cw-progress {
     position: absolute;
     bottom: 0;
