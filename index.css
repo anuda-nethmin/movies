@@ -31,33 +31,6 @@
 }
 
 /* ---------- Themes ---------- */
-[data-theme="crimson"] {
-    --bg-primary: #110505;
-    --bg-secondary: #0a0202;
-    --bg-surface: #1a0808;
-    --bg-card: #1a0808;
-    --bg-card-hover: #331010;
-    --bg-overlay: rgba(17, 5, 5, 0.85);
-    --accent-primary: #ef4444;
-    --accent-secondary: #fca5a5;
-    --accent-gradient: linear-gradient(135deg, #ef4444, #b91c1c);
-    --accent-glow: rgba(239, 68, 68, 0.35);
-    --border-hover: rgba(239, 68, 68, 0.3);
-}
-
-[data-theme="forest"] {
-    --bg-primary: #051109;
-    --bg-secondary: #020a05;
-    --bg-surface: #0a1a10;
-    --bg-card: #0a1a10;
-    --bg-card-hover: #10331a;
-    --bg-overlay: rgba(5, 17, 9, 0.85);
-    --accent-primary: #10b981;
-    --accent-secondary: #6ee7b7;
-    --accent-gradient: linear-gradient(135deg, #10b981, #047857);
-    --accent-glow: rgba(16, 185, 129, 0.35);
-    --border-hover: rgba(16, 185, 129, 0.3);
-}
 
 [data-theme="light"] {
     --bg-primary: #f8fafc;
