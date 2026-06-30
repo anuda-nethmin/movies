@@ -133,7 +133,7 @@
     const fetchTopRated = (type = 'movie', page = 1) => api(`/${type}/top_rated`, { page });
     const fetchNowPlaying = () => api('/movie/now_playing');
     const fetchAiringToday = () => api('/tv/airing_today');
-    const fetchDetails = (type, id) => api(`/${type}/${id}`, { append_to_response: 'credits,recommendations' });
+    const fetchDetails = (type, id) => api(`/${type}/${id}`, { append_to_response: 'credits,recommendations,videos' });
     const fetchSearch = (query, page = 1) => api('/search/multi', { query, page });
     const fetchDiscover = (type, page = 1, genre = '') => {
         const params = { page, sort_by: 'popularity.desc' };
@@ -537,6 +537,13 @@
             const inList = isInWatchlist(data.id);
             const itemObj = { id: data.id, title: itemTitle(data), poster_path: data.poster_path, vote_average: data.vote_average, release_date: itemDate(data), media_type: type };
 
+            const trailer = (data.videos?.results || []).find(v => v.type === 'Trailer' && v.site === 'YouTube');
+            const trailerBtn = trailer ? `
+                <button class="btn-secondary watch-trailer-btn" data-key="${trailer.key}">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    Trailer
+                </button>` : '';
+
             mainContent.innerHTML = `
                 <div class="detail-page">
                     <button class="back-btn" onclick="history.back()">
@@ -597,6 +604,7 @@
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                                         Play
                                     </button>
+                                    ${trailerBtn}
                                     <button class="btn-secondary watchlist-toggle${inList ? ' in-list' : ''}" data-item='${JSON.stringify(itemObj)}'>
                                         ${inList
                                             ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> In My List'
@@ -843,6 +851,21 @@
             return;
         }
 
+        // Trailer Button
+        const trailerBtn = e.target.closest('.watch-trailer-btn');
+        if (trailerBtn) {
+            const key = trailerBtn.dataset.key;
+            const modal = document.getElementById('trailer-modal');
+            const iframe = document.getElementById('trailer-iframe');
+            if (modal && iframe) {
+                iframe.src = `https://www.youtube.com/embed/${key}?autoplay=1`;
+                modal.style.display = 'flex';
+                // Small delay to allow display flex to apply before transition
+                setTimeout(() => modal.classList.add('visible'), 10);
+            }
+            return;
+        }
+
         // Season Toggles
         if (e.target.classList.contains('season-pill')) {
             document.querySelectorAll('.season-pill').forEach(p => p.classList.remove('active'));
@@ -1060,6 +1083,27 @@
             browseScrollHandler = null;
         }
         if (API_KEY) router();
+    });
+
+    // Trailer Modal Close Handlers
+    const closeTrailer = () => {
+        const modal = document.getElementById('trailer-modal');
+        const iframe = document.getElementById('trailer-iframe');
+        if (modal && iframe) {
+            modal.classList.remove('visible');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                iframe.src = '';
+            }, 300);
+        }
+    };
+
+    document.getElementById('close-trailer')?.addEventListener('click', closeTrailer);
+    document.getElementById('trailer-modal')?.addEventListener('click', (e) => {
+        if (e.target.id === 'trailer-modal') closeTrailer();
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') closeTrailer();
     });
 
     init();
