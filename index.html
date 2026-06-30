@@ -42,10 +42,12 @@
             </nav>
             <div class="header-actions">
                 <a href="https://brave.com/" target="_blank" rel="noopener noreferrer" class="brave-tip">🛡️ For the best ad-free experience, use <strong>Brave Browser</strong></a>
-                <div class="theme-switcher">
-                    <button class="theme-btn active" data-theme="default" title="Dark Mode (Default)" style="--btn-color: #0f172a; border: 2px solid #38bdf8;"></button>
-                    <button class="theme-btn" data-theme="light" title="Light Mode" style="--btn-color: #f8fafc; border: 2px solid #0ea5e9;"></button>
-                </div>
+                <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                    <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Moon -->
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </button>
             </div>
             <div class="sidebar-footer">
                 <a href="https://www.themoviedb.org" target="_blank" rel="noopener noreferrer" class="tmdb-link">
@@ -108,6 +110,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=25"></script>
+    <script src="app.js?v=26"></script>
 </body>
 </html>

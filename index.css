@@ -88,30 +88,32 @@
     gap: 24px;
 }
 
-.theme-switcher {
-    display: flex;
-    gap: 12px;
-}
-
-.theme-btn {
-    width: 24px;
-    height: 24px;
+.theme-toggle {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
     border-radius: 50%;
-    border: 2px solid transparent;
-    background-color: var(--btn-color);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
-    transition: transform 0.2s, border-color 0.2s;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    transition: all 0.2s ease;
 }
 
-.theme-btn:hover {
+.theme-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
     transform: scale(1.1);
 }
 
-.theme-btn.active {
-    border-color: #fff;
-    transform: scale(1.15);
-    box-shadow: 0 0 10px var(--btn-color);
+[data-theme="light"] .theme-toggle {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.1);
 }
 
 /* ---------- Reset & Base ---------- */
