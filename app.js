@@ -855,14 +855,7 @@
         const trailerBtn = e.target.closest('.watch-trailer-btn');
         if (trailerBtn) {
             const key = trailerBtn.dataset.key;
-            const modal = document.getElementById('trailer-modal');
-            const iframe = document.getElementById('trailer-iframe');
-            if (modal && iframe) {
-                iframe.src = `https://www.youtube-nocookie.com/embed/${key}`;
-                modal.style.display = 'flex';
-                // Small delay to allow display flex to apply before transition
-                setTimeout(() => modal.classList.add('visible'), 10);
-            }
+            window.open(`https://www.youtube.com/watch?v=${key}`, '_blank');
             return;
         }
 
