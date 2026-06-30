@@ -646,7 +646,7 @@
 
                         ${recs.length ? `
                         <div class="detail-section">
-                            <h2 class="detail-section-title">You Might Also Like</h2>
+                            <h2 class="detail-section-title">More Like This</h2>
                             ${carouselHTML(recs.map(r => ({...r, media_type: r.media_type || type})), 'c-recs')}
                         </div>` : ''}
                     </div>
