@@ -73,14 +73,17 @@ input { font-family: inherit; }
     left: 0;
     width: 100%;
     height: var(--navbar-height);
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(2, 6, 23, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     padding: 0 48px;
     z-index: 100;
+    transition: background 0.3s ease;
 }
 
 .sidebar-logo {
@@ -192,6 +195,28 @@ input { font-family: inherit; }
     width: 100%;
     min-height: calc(100vh - var(--navbar-height));
     padding-bottom: 60px;
+}
+
+/* ---------- Page Transitions ---------- */
+#main-content.page-transitioning {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+#main-content.page-visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+/* ---------- Lazy Image Fade-in ---------- */
+.card-img, .cw-poster img, .ep-thumbnail, .top10-poster img {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.card-img.loaded, .cw-poster img.loaded, .ep-thumbnail.loaded, .top10-poster img.loaded {
+    opacity: 1;
 }
 
 /* ---------- Mobile Nav ---------- */

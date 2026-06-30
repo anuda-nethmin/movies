@@ -160,20 +160,48 @@
             el.classList.toggle('active', el.dataset.page === (path || 'home'));
         });
 
-        mainContent.scrollTo?.(0, 0);
-        window.scrollTo(0, 0);
+        // Page transition: fade out
+        mainContent.classList.remove('page-visible');
+        mainContent.classList.add('page-transitioning');
 
-        switch (path) {
-            case '': case 'home': renderHome(); currentPage = 'home'; break;
-            case 'movies': renderBrowse('movie'); currentPage = 'movies'; break;
-            case 'tv': renderBrowse('tv'); currentPage = 'tv'; break;
-            case 'movie': renderDetail('movie', id); currentPage = 'detail'; break;
-            case 'show': renderDetail('tv', id); currentPage = 'detail'; break;
-            case 'search': renderSearch(); currentPage = 'search'; break;
-            case 'watchlist': renderWatchlist(); currentPage = 'watchlist'; break;
-            default: renderHome(); currentPage = 'home';
-        }
+        setTimeout(() => {
+            mainContent.scrollTo?.(0, 0);
+            window.scrollTo(0, 0);
+
+            switch (path) {
+                case '': case 'home': renderHome(); currentPage = 'home'; break;
+                case 'movies': renderBrowse('movie'); currentPage = 'movies'; break;
+                case 'tv': renderBrowse('tv'); currentPage = 'tv'; break;
+                case 'movie': renderDetail('movie', id); currentPage = 'detail'; break;
+                case 'show': renderDetail('tv', id); currentPage = 'detail'; break;
+                case 'search': renderSearch(); currentPage = 'search'; break;
+                case 'watchlist': renderWatchlist(); currentPage = 'watchlist'; break;
+                default: renderHome(); currentPage = 'home';
+            }
+
+            // Page transition: fade in
+            requestAnimationFrame(() => {
+                mainContent.classList.remove('page-transitioning');
+                mainContent.classList.add('page-visible');
+            });
+        }, 150);
     }
+
+    // ========== LAZY IMAGE FADE-IN ==========
+    function observeImages() {
+        mainContent.querySelectorAll('img:not(.loaded)').forEach(img => {
+            if (img.complete && img.naturalHeight > 0) {
+                img.classList.add('loaded');
+            } else {
+                img.addEventListener('load', () => img.classList.add('loaded'), { once: true });
+                img.addEventListener('error', () => img.classList.add('loaded'), { once: true });
+            }
+        });
+    }
+
+    // Observe images whenever DOM changes inside main content
+    const imgObserver = new MutationObserver(() => observeImages());
+    imgObserver.observe(mainContent, { childList: true, subtree: true });
 
     // ========== COMPONENTS ==========
     function cardHTML(item, animate = false) {
