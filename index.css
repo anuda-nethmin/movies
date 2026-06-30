@@ -59,14 +59,65 @@
     --border-hover: rgba(16, 185, 129, 0.3);
 }
 
+[data-theme="light"] {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --bg-surface: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #e2e8f0;
+    --bg-overlay: rgba(248, 250, 252, 0.85);
+    --accent-primary: #0ea5e9;
+    --accent-secondary: #64748b;
+    --accent-gradient: linear-gradient(135deg, #0ea5e9, #0284c7);
+    --accent-glow: rgba(14, 165, 233, 0.2);
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #64748b;
+    --border-subtle: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(14, 165, 233, 0.3);
+}
+
+[data-theme="light"] #sidebar {
+    background: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .nav-link, 
+[data-theme="light"] .mob-link,
+[data-theme="light"] .logo-text,
+[data-theme="light"] .browse-title,
+[data-theme="light"] .section-title,
+[data-theme="light"] .detail-title,
+[data-theme="light"] .hero-title {
+    color: #0f172a;
+}
+
+[data-theme="light"] .search-input {
+    background: #f1f5f9;
+    color: #0f172a;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+[data-theme="light"] .genre-tag {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+[data-theme="light"] .genre-tag:hover {
+    background: #e2e8f0;
+}
+
 /* Theme Switcher UI */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
 .theme-switcher {
-    position: fixed;
-    top: 24px;
-    right: 24px;
     display: flex;
     gap: 12px;
-    z-index: 1000;
 }
 
 .theme-btn {
