@@ -30,6 +30,65 @@
     --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* ---------- Themes ---------- */
+[data-theme="crimson"] {
+    --bg-primary: #110505;
+    --bg-secondary: #0a0202;
+    --bg-surface: #1a0808;
+    --bg-card: #1a0808;
+    --bg-card-hover: #331010;
+    --bg-overlay: rgba(17, 5, 5, 0.85);
+    --accent-primary: #ef4444;
+    --accent-secondary: #fca5a5;
+    --accent-gradient: linear-gradient(135deg, #ef4444, #b91c1c);
+    --accent-glow: rgba(239, 68, 68, 0.35);
+    --border-hover: rgba(239, 68, 68, 0.3);
+}
+
+[data-theme="forest"] {
+    --bg-primary: #051109;
+    --bg-secondary: #020a05;
+    --bg-surface: #0a1a10;
+    --bg-card: #0a1a10;
+    --bg-card-hover: #10331a;
+    --bg-overlay: rgba(5, 17, 9, 0.85);
+    --accent-primary: #10b981;
+    --accent-secondary: #6ee7b7;
+    --accent-gradient: linear-gradient(135deg, #10b981, #047857);
+    --accent-glow: rgba(16, 185, 129, 0.35);
+    --border-hover: rgba(16, 185, 129, 0.3);
+}
+
+/* Theme Switcher UI */
+.theme-switcher {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 0 16px;
+    justify-content: center;
+}
+
+.theme-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background-color: var(--btn-color);
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.theme-btn:hover {
+    transform: scale(1.1);
+}
+
+.theme-btn.active {
+    border-color: #fff;
+    transform: scale(1.15);
+    box-shadow: 0 0 10px var(--btn-color);
+}
+
 /* ---------- Reset & Base ---------- */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 

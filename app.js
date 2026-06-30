@@ -1059,6 +1059,23 @@
         }
     });
 
+    // ========== THEME MANAGEMENT ==========
+    function applyTheme(themeName) {
+        document.documentElement.setAttribute('data-theme', themeName);
+        localStorage.setItem('anuflix_theme', themeName);
+        
+        document.querySelectorAll('.theme-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.theme === themeName);
+        });
+    }
+
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyTheme(btn.dataset.theme));
+    });
+
+    const savedTheme = localStorage.getItem('anuflix_theme') || 'default';
+    applyTheme(savedTheme);
+
     // ========== INIT ==========
     async function init() {
         if (!API_KEY) {
