@@ -57,6 +57,63 @@
         saveWatchlist(list);
     }
 
+    // ========== CONTINUE WATCHING ==========
+    const getContinueWatching = () => JSON.parse(localStorage.getItem('anuflix_continue') || '[]');
+    const saveContinueWatching = list => localStorage.setItem('anuflix_continue', JSON.stringify(list));
+
+    function addToContinueWatching(item) {
+        let list = getContinueWatching();
+        // Remove if already exists (will re-add at front)
+        list = list.filter(i => !(i.id === item.id && i.type === item.type));
+        list.unshift({
+            id: item.id,
+            type: item.type,
+            title: item.title,
+            poster_path: item.poster_path,
+            backdrop_path: item.backdrop_path || '',
+            vote_average: item.vote_average || 0,
+            season: item.season || null,
+            episode: item.episode || null,
+            timestamp: Date.now()
+        });
+        // Keep max 20 items
+        if (list.length > 20) list = list.slice(0, 20);
+        saveContinueWatching(list);
+    }
+
+    function continueWatchingHTML() {
+        const items = getContinueWatching();
+        if (items.length === 0) return '';
+        const cards = items.map(item => {
+            const hash = item.type === 'tv' ? `#/show/${item.id}` : `#/movie/${item.id}`;
+            const subtitle = item.season ? `S${item.season} · E${item.episode}` : '';
+            return `
+            <a href="${hash}" class="cw-card" data-id="${item.id}">
+                <div class="cw-poster">
+                    <img src="${posterUrl(item.poster_path)}" alt="${item.title}" loading="lazy">
+                    <div class="cw-play-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    </div>
+                    <div class="cw-progress"><div class="cw-progress-bar"></div></div>
+                </div>
+                <div class="cw-info">
+                    <div class="cw-title">${item.title}</div>
+                    ${subtitle ? `<div class="cw-subtitle">${subtitle}</div>` : ''}
+                </div>
+            </a>`;
+        }).join('');
+        return `
+        <div class="section cw-section">
+            <div class="section-header">
+                <h2 class="section-title">Continue <span class="accent">Watching</span></h2>
+                <button class="cw-clear-btn" id="cw-clear">Clear All</button>
+            </div>
+            <div class="carousel">
+                <div class="carousel-track">${cards}</div>
+            </div>
+        </div>`;
+    }
+
     // ========== API ==========
     async function api(endpoint, params = {}) {
         const url = new URL(BASE_URL + endpoint);
@@ -251,6 +308,7 @@
 
             mainContent.innerHTML = `
                 ${heroHTML(hero)}
+                ${continueWatchingHTML()}
                 <div class="section">
                     <div class="section-header"><h2 class="section-title">Top 10 <span class="accent">Today</span></h2></div>
                     ${top10HTML(top10)}
@@ -292,15 +350,35 @@
                 </div>
                 ${footerHTML()}`;
 
+            // Continue Watching clear button
+            const cwClearBtn = document.getElementById('cw-clear');
+            if (cwClearBtn) {
+                cwClearBtn.addEventListener('click', () => {
+                    saveContinueWatching([]);
+                    const cwSection = document.querySelector('.cw-section');
+                    if (cwSection) cwSection.remove();
+                });
+            }
+
             initCarousels();
         } catch (e) {
             mainContent.innerHTML = `<div class="empty-state"><h3>Failed to load</h3><p>${e.message}</p></div>`;
         }
     }
 
-    // ========== PAGE: BROWSE ==========
+    // ========== PAGE: BROWSE (Infinite Scroll) ==========
+    let browseScrollHandler = null;
+    let browseIsLoading = false;
+
     async function renderBrowse(type) {
+        // Clean up previous scroll listener
+        if (browseScrollHandler) {
+            window.removeEventListener('scroll', browseScrollHandler);
+            browseScrollHandler = null;
+        }
+
         browseState = { page: 1, genre: '', results: [], type };
+        browseIsLoading = false;
         const label = type === 'movie' ? 'Movies' : 'TV Shows';
 
         mainContent.innerHTML = `
@@ -309,7 +387,6 @@
                 <div class="genre-filter" id="genre-filter"></div>
                 <div class="grid" id="browse-grid"></div>
                 <div class="spinner-wrap" id="browse-spinner" style="display:none"><div class="spinner"></div></div>
-                <button class="load-more-btn" id="load-more" style="display:none">Load More</button>
             </div>
             ${footerHTML()}`;
 
@@ -332,10 +409,17 @@
             });
         } catch (e) { /* ignore genre load error */ }
 
-        document.getElementById('load-more').addEventListener('click', () => {
-            browseState.page++;
-            loadBrowsePage(true);
-        });
+        // Infinite scroll
+        browseScrollHandler = () => {
+            if (browseIsLoading) return;
+            const scrollBottom = window.innerHeight + window.scrollY;
+            const docHeight = document.documentElement.scrollHeight;
+            if (scrollBottom >= docHeight - 600) {
+                browseState.page++;
+                loadBrowsePage(true);
+            }
+        };
+        window.addEventListener('scroll', browseScrollHandler);
 
         loadBrowsePage();
     }
@@ -343,10 +427,10 @@
     async function loadBrowsePage(append = false) {
         const grid = document.getElementById('browse-grid');
         const spinner = document.getElementById('browse-spinner');
-        const loadMore = document.getElementById('load-more');
+        if (!grid || !spinner) return;
         if (!append) grid.innerHTML = '';
+        browseIsLoading = true;
         spinner.style.display = 'flex';
-        loadMore.style.display = 'none';
 
         try {
             const data = await fetchDiscover(browseState.type, browseState.page, browseState.genre);
@@ -354,13 +438,18 @@
             const items = data.results.filter(i => i.poster_path);
             browseState.results.push(...items);
             grid.innerHTML += items.map(i => {
-                // Ensure media_type is set
                 i.media_type = browseState.type;
                 return cardHTML(i, true);
             }).join('');
-            if (data.page < data.total_pages) loadMore.style.display = 'block';
+            browseIsLoading = false;
+            // Remove scroll listener if no more pages
+            if (data.page >= data.total_pages && browseScrollHandler) {
+                window.removeEventListener('scroll', browseScrollHandler);
+                browseScrollHandler = null;
+            }
         } catch (e) {
             spinner.style.display = 'none';
+            browseIsLoading = false;
             if (!append) grid.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${e.message}</p></div>`;
         }
     }
@@ -433,7 +522,7 @@
                                     ${genres.map(g => `<span class="genre-pill">${g.name}</span>`).join('')}
                                 </div>
                                 <div class="detail-buttons">
-                                    <button class="btn-primary play-video-btn" data-id="${data.id}" data-type="${type}">
+                                    <button class="btn-primary play-video-btn" data-id="${data.id}" data-type="${type}" data-title="${itemTitle(data)}" data-poster="${data.poster_path || ''}" data-backdrop="${data.backdrop_path || ''}" data-rating="${data.vote_average || 0}">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                                         Play
                                     </button>
@@ -669,6 +758,17 @@
             currentVideoState.episode = 1;
             showInlinePlayer();
             updateInlineVideoFrame();
+            // Track in Continue Watching
+            addToContinueWatching({
+                id: parseInt(playBtn.dataset.id),
+                type: playBtn.dataset.type,
+                title: playBtn.dataset.title || 'Untitled',
+                poster_path: playBtn.dataset.poster || '',
+                backdrop_path: playBtn.dataset.backdrop || '',
+                vote_average: parseFloat(playBtn.dataset.rating) || 0,
+                season: playBtn.dataset.type === 'tv' ? 1 : null,
+                episode: playBtn.dataset.type === 'tv' ? 1 : null
+            });
             return;
         }
 
@@ -692,6 +792,17 @@
             
             showInlinePlayer();
             updateInlineVideoFrame();
+            // Update Continue Watching with new episode
+            const titleEl = document.querySelector('.detail-title');
+            const posterEl = document.querySelector('.detail-poster img');
+            addToContinueWatching({
+                id: parseInt(currentVideoState.id),
+                type: 'tv',
+                title: titleEl ? titleEl.textContent : 'Untitled',
+                poster_path: posterEl ? posterEl.src.split('/').pop() : '',
+                season: currentVideoState.season,
+                episode: currentVideoState.episode
+            });
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
@@ -811,6 +922,56 @@
         }
     }
 
+    // ========== KEYBOARD SHORTCUTS ==========
+    document.addEventListener('keydown', e => {
+        // Don't trigger if user is typing in an input
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+        switch(e.key) {
+            case 'f':
+            case 'F': {
+                const iframe = document.getElementById('inline-video-iframe');
+                if (iframe) {
+                    if (iframe.requestFullscreen) iframe.requestFullscreen();
+                    else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+                }
+                break;
+            }
+            case 'Escape': {
+                if (currentPage === 'detail') history.back();
+                break;
+            }
+            case 'ArrowRight': {
+                if (currentVideoState.type === 'tv' && currentVideoState.episodesData.length > 0) {
+                    const nextEp = currentVideoState.episodesData.find(ep => ep.episode_number > currentVideoState.episode);
+                    if (nextEp) {
+                        currentVideoState.episode = nextEp.episode_number;
+                        updateInlineVideoFrame();
+                        // Highlight episode card
+                        const card = document.querySelector(`.episode-card[data-episode="${nextEp.episode_number}"]`);
+                        if (card) {
+                            document.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+                            card.classList.add('active');
+                        }
+                    }
+                }
+                break;
+            }
+            case 'ArrowLeft': {
+                if (currentVideoState.type === 'tv' && currentVideoState.episode > 1) {
+                    currentVideoState.episode--;
+                    updateInlineVideoFrame();
+                    const card = document.querySelector(`.episode-card[data-episode="${currentVideoState.episode}"]`);
+                    if (card) {
+                        document.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+                        card.classList.add('active');
+                    }
+                }
+                break;
+            }
+        }
+    });
+
     // ========== INIT ==========
     async function init() {
         if (!API_KEY) {
@@ -822,6 +983,11 @@
     }
 
     window.addEventListener('hashchange', () => {
+        // Clean up browse scroll listener on page change
+        if (browseScrollHandler) {
+            window.removeEventListener('scroll', browseScrollHandler);
+            browseScrollHandler = null;
+        }
         if (API_KEY) router();
     });
 
