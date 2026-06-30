@@ -858,7 +858,8 @@
             const modal = document.getElementById('trailer-modal');
             const iframe = document.getElementById('trailer-iframe');
             if (modal && iframe) {
-                iframe.src = `https://www.youtube.com/embed/${key}?autoplay=1`;
+                const origin = window.location.origin;
+                iframe.src = `https://www.youtube-nocookie.com/embed/${key}?autoplay=1&origin=${origin}`;
                 modal.style.display = 'flex';
                 // Small delay to allow display flex to apply before transition
                 setTimeout(() => modal.classList.add('visible'), 10);
