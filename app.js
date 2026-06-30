@@ -446,6 +446,7 @@
                 <div class="genre-filter" id="genre-filter"></div>
                 <div class="grid" id="browse-grid"></div>
                 <div class="spinner-wrap" id="browse-spinner" style="display:none"><div class="spinner"></div></div>
+                <button class="load-more-btn" id="load-more" style="display:none">Load More</button>
             </div>
             ${footerHTML()}`;
 
@@ -480,16 +481,23 @@
         };
         window.addEventListener('scroll', browseScrollHandler);
 
+        document.getElementById('load-more').addEventListener('click', () => {
+            browseState.page++;
+            loadBrowsePage(true);
+        });
+
         loadBrowsePage();
     }
 
     async function loadBrowsePage(append = false) {
         const grid = document.getElementById('browse-grid');
         const spinner = document.getElementById('browse-spinner');
+        const loadMore = document.getElementById('load-more');
         if (!grid || !spinner) return;
         if (!append) grid.innerHTML = '';
         browseIsLoading = true;
         spinner.style.display = 'flex';
+        if (loadMore) loadMore.style.display = 'none';
 
         try {
             const data = await fetchDiscover(browseState.type, browseState.page, browseState.genre);
@@ -501,8 +509,12 @@
                 return cardHTML(i, true);
             }).join('');
             browseIsLoading = false;
-            // Remove scroll listener if no more pages
-            if (data.page >= data.total_pages && browseScrollHandler) {
+            
+            // Show load more button if there are more pages
+            if (data.page < data.total_pages) {
+                if (loadMore) loadMore.style.display = 'block';
+            } else if (browseScrollHandler) {
+                // Remove scroll listener if no more pages
                 window.removeEventListener('scroll', browseScrollHandler);
                 browseScrollHandler = null;
             }
