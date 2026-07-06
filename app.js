@@ -737,13 +737,19 @@
                 <div class="detail-body">
                     <div class="detail-section">
                         <div class="trailer-container" style="margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                            <!-- Paste your F1 Live Stream URL into the src="" below -->
                             <iframe 
-                                src="https://f1net.dpdns.org/stream" 
+                                id="f1-iframe"
+                                src="https://streamfree.app/embed/racing/skyf1?server=origin&quality=1080p&category=racing" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
                             </iframe>
+                        </div>
+                        <div class="server-pills" style="margin-top: 16px;">
+                            <button class="server-pill active" onclick="document.getElementById('f1-iframe').src='https://streamfree.app/embed/racing/skyf1?server=origin&quality=1080p&category=racing'; this.parentElement.querySelectorAll('.server-pill').forEach(b=>b.classList.remove('active')); this.classList.add('active');">Sky Sports F1</button>
+                            <button class="server-pill" onclick="document.getElementById('f1-iframe').src='https://westreamf1.com/westreamf1.php'; this.parentElement.querySelectorAll('.server-pill').forEach(b=>b.classList.remove('active')); this.classList.add('active');">Backup 1</button>
+                            <button class="server-pill" onclick="document.getElementById('f1-iframe').src='https://pushembdz.store/embed/5f9b043c-e448-41a9-8ab5-a9564b6cb8e2'; this.parentElement.querySelectorAll('.server-pill').forEach(b=>b.classList.remove('active')); this.classList.add('active');">Backup 2</button>
+                            <button class="server-pill" onclick="document.getElementById('f1-iframe').src='https://pushembdz.store/embed/a8d5deb2-da73-4ea5-9588-1e937b908ed6'; this.parentElement.querySelectorAll('.server-pill').forEach(b=>b.classList.remove('active')); this.classList.add('active');">Backup 3</button>
                         </div>
                     </div>
                 </div>
