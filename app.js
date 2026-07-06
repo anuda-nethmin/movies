@@ -739,7 +739,7 @@
                         <div class="trailer-container" style="margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
                             <!-- Paste your F1 Live Stream URL into the src="" below -->
                             <iframe 
-                                src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                                src="https://f1net.dpdns.org/stream" 
                                 frameborder="0" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen>
