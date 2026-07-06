@@ -179,6 +179,7 @@
                 case 'show': renderDetail('tv', id); currentPage = 'detail'; break;
                 case 'search': renderSearch(); currentPage = 'search'; break;
                 case 'watchlist': renderWatchlist(); currentPage = 'watchlist'; break;
+                case 'f1': renderF1(); currentPage = 'f1'; break;
                 default: renderHome(); currentPage = 'home';
             }
 
@@ -713,6 +714,39 @@
                         <h3>Your list is empty</h3>
                         <p>Add movies and TV shows to keep track of what you want to watch.</p>
                     </div>`}
+            </div>
+            ${footerHTML()}`;
+    }
+
+    // ========== PAGE: F1 LIVE ==========
+    function renderF1() {
+        mainContent.innerHTML = `
+            <div class="detail-page">
+                <div class="detail-backdrop-wrap">
+                    <div class="detail-backdrop" style="background-image: url('https://image.tmdb.org/t/p/original/rMqbXo2Pibx86Q0Xp7GvF4z5t21.jpg');"></div>
+                    <div class="detail-hero">
+                        <div class="detail-info">
+                            <h1 class="detail-title">Formula 1 Live Stream</h1>
+                            <p class="hero-overview" style="margin-top: 10px; max-width: 800px; color: var(--text-secondary);">
+                                Watch the latest Formula 1 Grand Prix live right here. Update the iframe source in app.js with your preferred stream URL.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="detail-body">
+                    <div class="detail-section">
+                        <div class="trailer-container" style="margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                            <!-- Paste your F1 Live Stream URL into the src="" below -->
+                            <iframe 
+                                src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
             </div>
             ${footerHTML()}`;
     }
