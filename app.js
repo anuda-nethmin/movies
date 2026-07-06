@@ -736,8 +736,8 @@
                 
                 <div class="detail-body">
                     <div class="detail-section">
-                        <div class="f1-stream-container" style="margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%;">
-                            <iframe src="https://westreamf1.com/westreamf1.php" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen" align="center" height="450px" width="100%"></iframe>
+                        <div class="f1-stream-container" style="margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 100%; aspect-ratio: 16/9;">
+                            <iframe src="https://westreamf1.com/westreamf1.php" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen" align="center" height="100%" width="100%"></iframe>
                         </div>
                     </div>
                 </div>
