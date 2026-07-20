@@ -728,7 +728,7 @@
                         <div class="detail-info">
                             <h1 class="detail-title">Formula 1 Live Stream</h1>
                             <p class="hero-overview" style="margin-top: 10px; max-width: 800px; color: var(--text-secondary);">
-                                Watch the latest Formula 1 Grand Prix live right here. Update the iframe source in app.js with your preferred stream URL.
+                                Watch the latest Formula 1 Grand Prix live. The stream goes live 15 minutes before each session.
                             </p>
                         </div>
                     </div>
@@ -910,11 +910,13 @@
             // Update Continue Watching with new episode
             const titleEl = document.querySelector('.detail-title');
             const posterEl = document.querySelector('.detail-poster img');
+            const posterSrc = posterEl ? posterEl.getAttribute('src') : '';
+            const posterMatch = posterSrc.match(/\/([^/]+)$/);
             addToContinueWatching({
                 id: parseInt(currentVideoState.id),
                 type: 'tv',
                 title: titleEl ? titleEl.textContent : 'Untitled',
-                poster_path: posterEl ? posterEl.src.split('/').pop() : '',
+                poster_path: posterMatch ? '/' + posterMatch[1] : '',
                 season: currentVideoState.season,
                 episode: currentVideoState.episode
             });
@@ -1132,27 +1134,6 @@
             browseScrollHandler = null;
         }
         if (API_KEY) router();
-    });
-
-    // Trailer Modal Close Handlers
-    const closeTrailer = () => {
-        const modal = document.getElementById('trailer-modal');
-        const iframe = document.getElementById('trailer-iframe');
-        if (modal && iframe) {
-            modal.classList.remove('visible');
-            setTimeout(() => {
-                modal.style.display = 'none';
-                iframe.src = '';
-            }, 300);
-        }
-    };
-
-    document.getElementById('close-trailer')?.addEventListener('click', closeTrailer);
-    document.getElementById('trailer-modal')?.addEventListener('click', (e) => {
-        if (e.target.id === 'trailer-modal') closeTrailer();
-    });
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') closeTrailer();
     });
 
     init();
