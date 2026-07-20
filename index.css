@@ -1671,6 +1671,188 @@ input { font-family: inherit; }
     animation: spin 0.8s linear infinite;
 }
 
+/* ---------- F1 Race Calendar ---------- */
+.f1-countdown {
+    background: var(--accent-gradient);
+    border-radius: 14px;
+    padding: 24px 32px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.f1-countdown-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 14px;
+}
+
+.f1-countdown-timer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.f1-countdown-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 60px;
+}
+
+.f1-countdown-unit span {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+}
+
+.f1-countdown-unit {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.1em;
+}
+
+.f1-countdown-sep {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.5);
+    margin-top: -12px;
+}
+
+.f1-countdown-live {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #fff;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.f1-calendar {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.f1-race-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--bg-card);
+    border-radius: 10px;
+    border: 1px solid var(--border-subtle);
+    transition: all 0.2s ease;
+}
+
+.f1-race-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
+}
+
+.f1-race-card.past {
+    opacity: 0.45;
+}
+
+.f1-race-card.next {
+    border-color: var(--accent-primary);
+    background: rgba(56, 189, 248, 0.06);
+    box-shadow: 0 0 20px var(--accent-glow);
+}
+
+.f1-race-round {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    min-width: 28px;
+}
+
+.f1-race-flag {
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.f1-race-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.f1-race-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.f1-race-circuit {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.f1-race-date-block {
+    text-align: right;
+    min-width: 110px;
+}
+
+.f1-race-date {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.f1-race-time {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.f1-sprint-badge {
+    display: inline-block;
+    background: var(--accent-gradient);
+    color: #fff;
+    font-size: 0.58rem;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+}
+
+.f1-race-status {
+    min-width: 48px;
+    text-align: center;
+}
+
+.f1-status-done {
+    color: var(--color-green);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.f1-status-next {
+    background: var(--accent-gradient);
+    color: #fff;
+    font-size: 0.62rem;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    letter-spacing: 0.05em;
+}
+
+.f1-status-upcoming {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1024px) {
     .section, .detail-body, .search-page, .browse-page, .watchlist-page, .back-btn {

@@ -719,7 +719,10 @@
     }
 
     // ========== PAGE: F1 LIVE ==========
-    function renderF1() {
+    const F1_FLAGS = {'Australia':'\u{1F1E6}\u{1F1FA}','China':'\u{1F1E8}\u{1F1F3}','Japan':'\u{1F1EF}\u{1F1F5}','Bahrain':'\u{1F1E7}\u{1F1ED}','Saudi Arabia':'\u{1F1F8}\u{1F1E6}','USA':'\u{1F1FA}\u{1F1F8}','United States':'\u{1F1FA}\u{1F1F8}','Italy':'\u{1F1EE}\u{1F1F9}','Monaco':'\u{1F1F2}\u{1F1E8}','Spain':'\u{1F1EA}\u{1F1F8}','Canada':'\u{1F1E8}\u{1F1E6}','Austria':'\u{1F1E6}\u{1F1F9}','UK':'\u{1F1EC}\u{1F1E7}','Hungary':'\u{1F1ED}\u{1F1FA}','Belgium':'\u{1F1E7}\u{1F1EA}','Netherlands':'\u{1F1F3}\u{1F1F1}','Singapore':'\u{1F1F8}\u{1F1EC}','Azerbaijan':'\u{1F1E6}\u{1F1FF}','Mexico':'\u{1F1F2}\u{1F1FD}','Brazil':'\u{1F1E7}\u{1F1F7}','Qatar':'\u{1F1F6}\u{1F1E6}','UAE':'\u{1F1E6}\u{1F1EA}'};
+    function getFlag(c) { return F1_FLAGS[c] || '\u{1F3C1}'; }
+
+    async function renderF1() {
         mainContent.innerHTML = `
             <div class="detail-page">
                 <div class="detail-backdrop-wrap">
@@ -740,9 +743,72 @@
                             <iframe src="https://westreamf1.com/westreamf1.php" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true" height="100%" width="100%" style="border: none;"></iframe>
                         </div>
                     </div>
+
+                    <div class="detail-section" style="margin-top: 40px;">
+                        <h2 class="detail-section-title">\u{1F3CE}\u{FE0F} Race Calendar</h2>
+                        <div id="f1-countdown-wrap"></div>
+                        <div id="f1-calendar" class="f1-calendar">
+                            <div class="spinner-wrap"><div class="spinner"></div></div>
+                        </div>
+                    </div>
                 </div>
             </div>
             ${footerHTML()}`;
+
+        try {
+            const res = await fetch('https://api.jolpi.ca/ergast/f1/current.json');
+            const data = await res.json();
+            const races = data.MRData.RaceTable.Races;
+            const now = new Date();
+            let nextIdx = races.findIndex(r => new Date(r.date + 'T' + (r.time || '00:00:00Z')) > now);
+            if (nextIdx === -1) nextIdx = races.length;
+
+            const calEl = document.getElementById('f1-calendar');
+            if (!calEl) return;
+
+            calEl.innerHTML = races.map((race, i) => {
+                const rd = new Date(race.date + 'T' + (race.time || '00:00:00Z'));
+                const isPast = i < nextIdx;
+                const isNext = i === nextIdx;
+                const flag = getFlag(race.Circuit.Location.country);
+                const day = rd.toLocaleDateString('en-GB', {weekday:'short'});
+                const date = rd.toLocaleDateString('en-GB', {day:'numeric',month:'short'});
+                const time = rd.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
+                const sprint = race.Sprint ? '<span class="f1-sprint-badge">SPRINT</span>' : '';
+                const status = isPast ? '<span class="f1-status-done">\u2713</span>' : isNext ? '<span class="f1-status-next">NEXT</span>' : '<span class="f1-status-upcoming">\u2014</span>';
+                return '<div class="f1-race-card' + (isPast ? ' past' : '') + (isNext ? ' next' : '') + '">' +
+                    '<div class="f1-race-round">R' + race.round + '</div>' +
+                    '<div class="f1-race-flag">' + flag + '</div>' +
+                    '<div class="f1-race-details"><div class="f1-race-name">' + race.raceName + '</div><div class="f1-race-circuit">' + race.Circuit.circuitName + '</div></div>' +
+                    '<div class="f1-race-date-block"><div class="f1-race-date">' + day + ' ' + date + '</div><div class="f1-race-time">' + time + ' local</div>' + sprint + '</div>' +
+                    '<div class="f1-race-status">' + status + '</div></div>';
+            }).join('');
+
+            if (nextIdx < races.length) {
+                const nr = races[nextIdx];
+                const nd = new Date(nr.date + 'T' + (nr.time || '00:00:00Z'));
+                const wrap = document.getElementById('f1-countdown-wrap');
+                if (wrap) {
+                    function tick() {
+                        const diff = nd - new Date();
+                        if (diff <= 0) { wrap.innerHTML = '<div class="f1-countdown"><span class="f1-countdown-live">\u{1F534} RACE IS LIVE NOW</span></div>'; return; }
+                        const d = Math.floor(diff/864e5), h = Math.floor(diff%864e5/36e5), m = Math.floor(diff%36e5/6e4), s = Math.floor(diff%6e4/1e3);
+                        wrap.innerHTML = '<div class="f1-countdown">' +
+                            '<div class="f1-countdown-label">Next Race: ' + nr.raceName + ' ' + getFlag(nr.Circuit.Location.country) + '</div>' +
+                            '<div class="f1-countdown-timer">' +
+                            '<div class="f1-countdown-unit"><span>' + d + '</span>DAYS</div><div class="f1-countdown-sep">:</div>' +
+                            '<div class="f1-countdown-unit"><span>' + h + '</span>HRS</div><div class="f1-countdown-sep">:</div>' +
+                            '<div class="f1-countdown-unit"><span>' + String(m).padStart(2,'0') + '</span>MIN</div><div class="f1-countdown-sep">:</div>' +
+                            '<div class="f1-countdown-unit"><span>' + String(s).padStart(2,'0') + '</span>SEC</div></div></div>';
+                    }
+                    tick();
+                    setInterval(tick, 1000);
+                }
+            }
+        } catch(e) {
+            const c = document.getElementById('f1-calendar');
+            if (c) c.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Failed to load race calendar.</p>';
+        }
     }
 
     // ========== CAROUSEL CONTROLS ==========
