@@ -1803,6 +1803,7 @@ input { font-family: inherit; }
 }
 
 .f1-schedule-section {
+    min-width: min(100%, 580px) !important;
     max-width: 700px !important;
 }
 
@@ -1812,7 +1813,7 @@ input { font-family: inherit; }
     gap: 20px;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1300px) {
     .f1-calendar-split {
         grid-template-columns: 1fr;
     }
