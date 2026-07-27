@@ -370,7 +370,7 @@ input { font-family: inherit; }
 }
 
 /* Skeleton Loaders */
-@keyframes shimmer {
+@keyframes shimmerBg {
     0% { background-position: -1000px 0; }
     100% { background-position: 1000px 0; }
 }
@@ -378,7 +378,7 @@ input { font-family: inherit; }
     border-radius: 12px;
     background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
     background-size: 1000px 100%;
-    animation: shimmer 2s infinite linear;
+    animation: shimmerBg 2s infinite linear;
     aspect-ratio: 2/3;
     width: 100%;
     box-shadow: 0 4px 6px rgba(0,0,0,0.3);
@@ -2770,7 +2770,7 @@ input { font-family: inherit; }
     height: 129px;
     background: var(--surface-light);
     border-radius: 8px;
-    animation: shimmer 1.5s infinite linear;
-    background: linear-gradient(90deg, var(--surface-light) 0%, rgba(255,255,255,0.05) 50%, var(--surface-light) 100%);
-    background-size: 200% 100%;
+    animation: shimmerBg 1.5s infinite linear;
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+    background-size: 1000px 100%;
 }
