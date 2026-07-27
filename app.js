@@ -200,6 +200,45 @@
     };
     
     // Anime API Functions (Filtered by Crunchyroll Watch Provider ID 283)
+    async function fetchAnimePopular(page = 1) {
+        return fetchMulti('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'popularity.desc' }, page, 5);
+    }
+    
+    // Auto-Playing Hero Trailer Logic
+    async function loadHeroTrailer() {
+        const heroEl = document.querySelector('.hero');
+        if (!heroEl) return;
+        
+        const id = heroEl.getAttribute('data-hero-id');
+        const type = heroEl.getAttribute('data-hero-type');
+        if (!id || !type) return;
+
+        try {
+            const data = await fetchDetails(type, id);
+            const trailer = (data.videos?.results || []).find(v => v.type === 'Trailer' && v.site === 'YouTube');
+            
+            if (trailer) {
+                // Check if we are still on the same page
+                const currentHeroEl = document.querySelector('.hero');
+                if (currentHeroEl && currentHeroEl.getAttribute('data-hero-id') === id) {
+                    const videoHTML = `
+                        <div class="hero-video-wrapper">
+                            <iframe 
+                                src="https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${trailer.key}" 
+                                frameborder="0" 
+                                allow="autoplay; encrypted-media" 
+                                onload="this.parentElement.style.opacity = '1'">
+                            </iframe>
+                        </div>`;
+                    currentHeroEl.insertAdjacentHTML('afterbegin', videoHTML);
+                }
+            }
+        } catch (e) {
+            console.error("Failed to load hero trailer:", e);
+        }
+    }
+
+    /* ---------- Render Functions ---------- */
     const animeBaseParams = { 
         with_genres: '16', 
         with_original_language: 'ja', 
@@ -342,7 +381,7 @@
         const genres = (item.genre_ids || []).slice(0, 3).map(id => genresMap[id]).filter(Boolean);
         const inList = isInWatchlist(item.id);
         return `
-        <div class="hero">
+        <div class="hero" data-hero-id="${item.id}" data-hero-type="${type}">
             <div class="hero-backdrop" style="background-image:url('${backdropUrl(item.backdrop_path)}')"></div>
             <div class="hero-content-new">
                 <div class="hero-tagline">Featured Today</div>
@@ -748,6 +787,7 @@
                     </div>
                 </div>
                 ${footerHTML()}`;
+            setTimeout(loadHeroTrailer, 500);
             
         } catch (e) {
             const defaultContainer = document.getElementById('anime-default-container');
@@ -822,6 +862,7 @@
                     ${carouselHTML(topTV.results, 'c-top-tv')}
                 </div>
                 ${footerHTML()}`;
+            setTimeout(loadHeroTrailer, 500);
 
             // Continue Watching clear button
             const cwClearBtn = document.getElementById('cw-clear');
@@ -990,12 +1031,11 @@
 
             mainContent.innerHTML = `
                 <div class="detail-page">
-                    <button class="back-btn" onclick="history.back()">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-                        Back
-                    </button>
-                    
                     <div id="detail-backdrop-wrap" class="detail-backdrop-wrap">
+                        <button class="back-btn" onclick="history.back()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                            Back
+                        </button>
                         <div class="detail-backdrop" style="background-image:url('${backdropUrl(data.backdrop_path)}')"></div>
                         <div class="detail-hero">
                             <div class="detail-poster">
@@ -1098,6 +1138,7 @@
                     </div>
                 </div>
                 ${footerHTML()}`;
+            setTimeout(loadHeroTrailer, 500);
 
             // Initialize Video & TV logic if it's a TV show
             if (type === 'tv' && data.number_of_seasons) {
