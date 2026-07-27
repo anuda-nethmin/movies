@@ -1987,6 +1987,7 @@ input { font-family: inherit; }
     background: #0a0a0a;
     padding: 24px;
     border-radius: 12px;
+    container-type: inline-size;
     border: 1px solid rgba(59, 130, 246, 0.6);
     box-shadow: 0 0 25px rgba(59, 130, 246, 0.25), inset 0 0 15px rgba(59, 130, 246, 0.1);
 }
@@ -2078,8 +2079,17 @@ input { font-family: inherit; }
 
 .f1-calendar-split {
     display: grid;
-    grid-template-columns: 1fr; /* Force 1 column ALWAYS to prevent overflow on ultrawides */
+    grid-template-columns: 1fr;
     gap: 20px;
+}
+
+@container (min-width: 680px) {
+    .f1-calendar-split {
+        grid-template-columns: 1fr 1fr;
+    }
+    .f1-col-list {
+        max-height: 600px;
+    }
 }
 
 .f1-race-card {
@@ -2093,7 +2103,6 @@ input { font-family: inherit; }
     border: 1px solid var(--border-subtle);
     transition: all 0.2s ease;
     overflow: hidden; /* safety fallback */
-    width: 100%;
 }
 
 .f1-race-card:hover {
