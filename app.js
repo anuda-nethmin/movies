@@ -1822,20 +1822,20 @@
                             const type = item.media_type || (item.title ? 'movie' : 'tv');
                             const hashType = type === 'tv' ? 'show' : 'movie';
                             
-                            return \`
-                            <div class="search-suggestion-item" onclick="window.location.hash='#/\${hashType}/\${item.id}'; document.getElementById('global-search-suggestions').style.display='none'; document.getElementById('global-search-input').value='';">
-                                <img src="\${poster}" class="search-suggestion-poster" alt="\${title}">
+                            return `
+                            <div class="search-suggestion-item" onclick="window.location.hash='#/${hashType}/${item.id}'; document.getElementById('global-search-suggestions').style.display='none'; document.getElementById('global-search-input').value='';">
+                                <img src="${poster}" class="search-suggestion-poster" alt="${title}">
                                 <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden;">
-                                    <div class="search-suggestion-title">\${title}</div>
-                                    <div class="search-suggestion-meta">\${year} • \${type === 'movie' ? 'Movie' : 'TV Show'}</div>
+                                    <div class="search-suggestion-title">${title}</div>
+                                    <div class="search-suggestion-meta">${year} • ${type === 'movie' ? 'Movie' : 'TV Show'}</div>
                                 </div>
-                            </div>\`;
+                            </div>`;
                         }).join('');
                     } else {
-                        globalSearchSuggestions.innerHTML = \`<div class="search-suggestion-item" style="color: var(--text-muted); justify-content: center; padding: 12px;">No results found</div>\`;
+                        globalSearchSuggestions.innerHTML = `<div class="search-suggestion-item" style="color: var(--text-muted); justify-content: center; padding: 12px;">No results found</div>`;
                     }
                 } catch (e) {
-                    globalSearchSuggestions.innerHTML = \`<div class="search-suggestion-item" style="color: var(--text-muted); justify-content: center; padding: 12px;">Error loading results</div>\`;
+                    globalSearchSuggestions.innerHTML = `<div class="search-suggestion-item" style="color: var(--text-muted); justify-content: center; padding: 12px;">Error loading results</div>`;
                 }
             }, 300);
         });
