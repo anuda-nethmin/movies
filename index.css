@@ -2080,13 +2080,13 @@ input { font-family: inherit; }
 
 .f1-calendar-split {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 20px;
 }
 
 @container (min-width: 750px) {
     .f1-calendar-split {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     }
     .f1-col-list {
         max-height: 600px;
