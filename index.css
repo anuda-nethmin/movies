@@ -2066,7 +2066,7 @@ input { font-family: inherit; }
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 600px;
+    max-height: 300px; /* Keep shorter so Past & Upcoming stack nicely */
     overflow-y: auto;
     padding-right: 4px;
 }
@@ -2078,17 +2078,8 @@ input { font-family: inherit; }
 
 .f1-calendar-split {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr; /* Force 1 column ALWAYS to prevent overflow on ultrawides */
     gap: 20px;
-}
-
-@media (max-width: 2100px) {
-    .f1-calendar-split {
-        grid-template-columns: 1fr;
-    }
-    .f1-col-list {
-        max-height: 300px; /* shorter so Past & Upcoming stack nicely next to player */
-    }
 }
 
 .f1-race-card {
