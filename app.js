@@ -157,6 +157,13 @@
         if (genre) params.with_genres = genre;
         return api(`/discover/${type}`, params);
     };
+    
+    // Anime API Functions
+    const fetchAnimeTopAiring = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'popularity.desc', 'air_date.lte': new Date().toISOString().split('T')[0] });
+    const fetchAnimePopular = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'popularity.desc' });
+    const fetchAnimeFavorite = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'vote_average.desc', 'vote_count.gte': 1000 });
+    const fetchAnimeCompleted = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'first_air_date.desc', 'vote_count.gte': 50, with_status: '3' });
+
     const fetchGenres = type => api(`/genre/${type}/list`);
 
     async function loadGenres() {
@@ -197,6 +204,7 @@
                 case 'search': renderSearch(); currentPage = 'search'; break;
                 case 'watchlist': renderWatchlist(); currentPage = 'watchlist'; break;
                 case 'f1': renderF1(); currentPage = 'f1'; break;
+                case 'anime': renderAnime(); currentPage = 'anime'; break;
                 default: renderHome(); currentPage = 'home';
             }
 
@@ -234,7 +242,7 @@
         return `
         <a href="${hash}" class="card${animate ? ' animate-in' : ''}" data-id="${item.id}">
             <div class="card-poster">
-                <img class="card-img" src="${posterUrl(item.poster_path)}" alt="${title}" loading="lazy">
+                <img class="card-img poster-img" src="${posterUrl(item.poster_path)}" alt="${title}" loading="lazy" onload="this.classList.add('loaded')">
                 ${r ? `<div class="card-rating">${STAR_SVG} ${rating(r)}</div>` : ''}
                 <div class="card-overlay">
                     <div class="card-overlay-title">${title}</div>
@@ -329,6 +337,52 @@
 
     function footerHTML() {
         return `<footer class="page-footer">&copy; ${new Date().getFullYear()} Anuflix. Data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>.</footer>`;
+    }
+
+    // ========== PAGE: ANIME ==========
+    async function renderAnime() {
+        mainContent.innerHTML = `
+            ${skeletonHero()}
+            <div class="section"><div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>${skeletonCards()}</div>
+            <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Popular</span></h2></div>${skeletonCards()}</div>
+            <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Favorite</span></h2></div>${skeletonCards()}</div>
+            <div class="section"><div class="section-header"><h2 class="section-title">Latest <span class="accent">Completed</span></h2></div>${skeletonCards()}</div>`;
+
+        try {
+            const [topAiring, mostPopular, mostFavorite, latestCompleted] = await Promise.all([
+                fetchAnimeTopAiring(),
+                fetchAnimePopular(),
+                fetchAnimeFavorite(),
+                fetchAnimeCompleted()
+            ]);
+
+            // Select a hero anime from top airing
+            const hero = topAiring.results[0] || mostPopular.results[0];
+
+            mainContent.innerHTML = `
+                ${heroHTML(hero)}
+                <div class="section">
+                    <div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>
+                    ${carouselHTML(topAiring.results.slice(1))}
+                </div>
+                <div class="section">
+                    <div class="section-header"><h2 class="section-title">Most <span class="accent">Popular</span></h2></div>
+                    ${carouselHTML(mostPopular.results)}
+                </div>
+                <div class="section">
+                    <div class="section-header"><h2 class="section-title">Most <span class="accent">Favorite</span></h2></div>
+                    ${carouselHTML(mostFavorite.results)}
+                </div>
+                <div class="section">
+                    <div class="section-header"><h2 class="section-title">Latest <span class="accent">Completed</span></h2></div>
+                    ${carouselHTML(latestCompleted.results)}
+                </div>
+                ${footerHTML()}`;
+            
+            initCarousels();
+        } catch (e) {
+            mainContent.innerHTML = `<div class="empty-state"><h3>Failed to load Anime</h3><p>${e.message}</p></div>`;
+        }
     }
 
     // ========== PAGE: HOME ==========
@@ -463,7 +517,9 @@
                 <h1 class="browse-title">${label}</h1>
                 <div class="genre-filter" id="genre-filter"></div>
                 <div class="grid" id="browse-grid"></div>
-                <div class="spinner-wrap" id="browse-spinner" style="display:none"><div class="spinner"></div></div>
+                <div id="browse-spinner" style="display:none; width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
+                </div>
                 <button class="load-more-btn" id="load-more" style="display:none">Load More</button>
             </div>
             ${footerHTML()}`;
@@ -511,15 +567,15 @@
         const grid = document.getElementById('browse-grid');
         const spinner = document.getElementById('browse-spinner');
         const loadMore = document.getElementById('load-more');
-        if (!grid || !spinner) return;
+        if (!grid) return;
         if (!append) grid.innerHTML = '';
         browseIsLoading = true;
-        spinner.style.display = 'flex';
+        if (spinner) spinner.style.display = 'grid';
         if (loadMore) loadMore.style.display = 'none';
 
         try {
             const data = await fetchDiscover(browseState.type, browseState.page, browseState.genre);
-            spinner.style.display = 'none';
+            if (spinner) spinner.style.display = 'none';
             const items = data.results.filter(i => i.poster_path);
             browseState.results.push(...items);
             grid.innerHTML += items.map(i => {
@@ -537,7 +593,7 @@
                 browseScrollHandler = null;
             }
         } catch (e) {
-            spinner.style.display = 'none';
+            if (spinner) spinner.style.display = 'none';
             browseIsLoading = false;
             if (!append) grid.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${e.message}</p></div>`;
         }
@@ -545,7 +601,7 @@
 
     // ========== PAGE: DETAIL ==========
     async function renderDetail(type, id) {
-        mainContent.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div></div>`;
+        mainContent.innerHTML = `<div style="padding: 40px; width: 100%;"><div class="skeleton-card" style="width: 100%; max-width: 800px; aspect-ratio: 16/9; margin: 0 auto;"></div></div>`;
 
         try {
             const data = await fetchDetails(type, id);
@@ -711,7 +767,9 @@
             const q = input.value.trim();
             if (q.length < 2) { results.innerHTML = ''; return; }
 
-            results.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div></div>`;
+            results.innerHTML = `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; width: 100%;">
+                <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
+            </div>`;
 
             try {
                 const data = await fetchSearch(q);
@@ -817,7 +875,7 @@
                             <h2 class="detail-section-title" style="margin-top: 0; margin-bottom: 20px; font-size: 1.3rem;">\u{1F3CE}\u{FE0F} Race Calendar</h2>
                             <div id="f1-countdown-wrap"></div>
                             <div id="f1-calendar" class="f1-calendar">
-                                <div class="spinner-wrap"><div class="spinner"></div></div>
+                                <div class="skeleton-card"></div>
                             </div>
                         </div>
                     </div>
@@ -840,7 +898,7 @@
                         <div class="f1-standings-container">
                             <h2 class="detail-section-title" style="margin-top: 0; margin-bottom: 20px; font-size: 1.3rem;">\u{1F3C6} Championship</h2>
                             <div id="f1-standings">
-                                <div class="spinner-wrap"><div class="spinner"></div></div>
+                                <div class="skeleton-card"></div>
                             </div>
                         </div>
                     </div>
@@ -1274,7 +1332,7 @@
 
     async function loadEpisodesUI(tvId, seasonNumber) {
         const list = document.getElementById('episodes-list');
-        list.innerHTML = `<div class="spinner-wrap"><div class="spinner"></div></div>`;
+        list.innerHTML = `<div class="skeleton-card"></div>`;
         
         try {
             const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNumber}?api_key=${API_KEY}`);
@@ -1407,4 +1465,15 @@
     });
 
     init();
+    // ========== DYNAMIC MOUSE GLOW ==========
+    document.addEventListener('mousemove', e => {
+        document.querySelectorAll('.card:hover').forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        });
+    });
+
 })();

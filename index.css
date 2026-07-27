@@ -315,24 +315,24 @@ input { font-family: inherit; }
 
 .tmdb-link:hover { color: var(--text-secondary); }
 
-/* ---------- Main Content ---------- */
+/* --- Main Content Area & Transitions --- */
 #main-content {
     margin-top: var(--navbar-height);
+    margin-left: 0;
     width: 100%;
     min-height: calc(100vh - var(--navbar-height));
-    padding-bottom: 60px;
+    flex: 1;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: opacity, transform;
 }
 
-/* ---------- Page Transitions ---------- */
-#main-content.page-transitioning {
+.page-transitioning {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(15px);
 }
-
-#main-content.page-visible {
+.page-visible {
     opacity: 1;
     transform: translateY(0);
-    transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 /* ---------- Lazy Image Fade-in ---------- */
@@ -343,6 +343,49 @@ input { font-family: inherit; }
 
 .card-img.loaded, .cw-poster img.loaded, .ep-thumbnail.loaded, .top10-poster img.loaded {
     opacity: 1;
+}
+
+/* Dynamic Mouse Glow */
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(255, 255, 255, 0.1), transparent 40%);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.card:hover::before {
+    opacity: 1;
+}
+
+/* Poster Fade-in */
+.poster-img {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+.poster-img.loaded {
+    opacity: 1;
+}
+
+/* Skeleton Loaders */
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+.skeleton-card {
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+    aspect-ratio: 2/3;
+    width: 100%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+[data-theme="light"] .skeleton-card {
+    background: linear-gradient(90deg, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.05) 75%);
+    background-size: 1000px 100%;
 }
 
 /* ---------- Mobile Nav ---------- */
@@ -606,6 +649,8 @@ input { font-family: inherit; }
     scroll-snap-align: start;
     cursor: pointer;
     transition: transform var(--transition-smooth);
+    position: relative; /* Added for glow overlay */
+    overflow: hidden; /* Added for glow overlay */
 }
 
 .card:hover { transform: translateY(-8px); }
@@ -1249,34 +1294,43 @@ input { font-family: inherit; }
     border-radius: 0;
 }
 
-/* ---------- API Key Modal ---------- */
+/* ---------- Modals ---------- */
 .modal {
+    display: none;
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(12px);
-    display: flex;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2000;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
     opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--transition-normal);
 }
-
 .modal.visible {
     opacity: 1;
-    pointer-events: auto;
 }
-
 .modal-content {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-subtle);
+    background: rgba(12, 12, 24, 0.85); /* Frost glass modal */
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     border-radius: 20px;
     padding: 40px;
     max-width: 420px;
     width: 90%;
     text-align: center;
+    transform: scale(0.95);
+    transition: transform var(--transition-normal);
+}
+[data-theme="light"] .modal-content {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+.modal.visible .modal-content {
+    transform: scale(1);
 }
 
 .modal-icon { margin-bottom: 20px; }
@@ -1762,12 +1816,12 @@ input { font-family: inherit; }
 
 .page-footer a { color: var(--accent-primary); }
 
-/* ---------- Loading Spinner ---------- */
+/* ---------- Loaders ---------- */
 .spinner-wrap {
     display: flex;
-    align-items: center;
     justify-content: center;
     padding: 60px 0;
+    width: 100%;
 }
 
 .spinner {
