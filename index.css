@@ -2513,36 +2513,40 @@ input { font-family: inherit; }
     margin: 32px 48px;
     overflow: hidden;
 }
-.anime-filter-header {
+.anime-filter-top-row {
     display: flex;
-    justify-content: space-between;
+    gap: 12px;
     align-items: center;
-    padding: 16px 24px;
-    cursor: pointer;
-    user-select: none;
-    transition: background 0.2s;
+    padding: 12px 24px;
 }
-.anime-filter-header:hover {
-    background: rgba(255, 255, 255, 0.05);
+.anime-filter-top-row.has-border {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
-.anime-filter-header-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--text-primary);
+.anime-filter-toggle-btn {
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: pointer;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s;
+    user-select: none;
+}
+.anime-filter-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 .anime-filter-header-icon {
     transition: transform 0.3s ease;
 }
-.anime-filter-header.open .anime-filter-header-icon {
+.anime-filter-toggle-btn.open .anime-filter-header-icon {
     transform: rotate(180deg);
 }
 .anime-filter-content {
     display: none;
-    padding: 0 24px 24px 24px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 20px 24px;
 }
 .anime-filter-content.show {
     display: block;

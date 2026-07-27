@@ -392,63 +392,63 @@
         }
 
         mainContent.innerHTML = `
-            <!-- Advanced Filter UI -->
             <div class="anime-filter-wrapper">
-                <div class="anime-filter-header" id="anime-filter-header">
-                    <div class="anime-filter-header-title">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
-                        Advanced Filters
+                <div class="anime-filter-top-row" id="anime-filter-top-row">
+                    <div class="filter-group" style="flex: 1; margin: 0; background: rgba(0,0,0,0.2);">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" class="filter-search-input" id="filter-search" placeholder="Search anime..." style="width: 100%;">
                     </div>
-                    <svg class="anime-filter-header-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    <button class="filter-submit-btn" id="filter-search-btn" style="padding: 8px 16px; margin: 0;">Search</button>
+                    <div class="anime-filter-toggle-btn" id="anime-filter-toggle-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        Filters
+                        <svg class="anime-filter-header-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
                 </div>
                 
                 <div class="anime-filter-content" id="anime-filter-content">
-                    <div class="filter-row" style="margin-top:20px;">
+                    <div class="filter-row" style="margin-top:0;">
                         <div class="filter-group">
-                        <span class="filter-group-label">Type</span>
-                        <select class="filter-select" id="filter-type">
-                            <option value="all">All</option>
-                            <option value="tv">TV</option>
-                            <option value="movie">Movie</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <span class="filter-group-label">Status</span>
-                        <select class="filter-select" id="filter-status">
-                            <option value="all">All</option>
-                            <option value="0">Returning Series</option>
-                            <option value="3">Ended</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <span class="filter-group-label">Score</span>
-                        <select class="filter-select" id="filter-score">
-                            <option value="all">All</option>
-                            <option value="9">9+</option>
-                            <option value="8">8+</option>
-                            <option value="7">7+</option>
-                            <option value="6">6+</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <span class="filter-group-label">Sort</span>
-                        <select class="filter-select" id="filter-sort">
-                            <option value="popularity.desc">Popularity</option>
-                            <option value="vote_average.desc">Rating</option>
-                            <option value="first_air_date.desc">Newest</option>
-                        </select>
-                    </div>
-                    <div class="filter-group">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        <input type="text" class="filter-search-input" id="filter-search" placeholder="Search anime...">
+                            <span class="filter-group-label">Type</span>
+                            <select class="filter-select" id="filter-type">
+                                <option value="all">All</option>
+                                <option value="tv">TV</option>
+                                <option value="movie">Movie</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-group-label">Status</span>
+                            <select class="filter-select" id="filter-status">
+                                <option value="all">All</option>
+                                <option value="0">Returning Series</option>
+                                <option value="3">Ended</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-group-label">Score</span>
+                            <select class="filter-select" id="filter-score">
+                                <option value="all">All</option>
+                                <option value="9">9+</option>
+                                <option value="8">8+</option>
+                                <option value="7">7+</option>
+                                <option value="6">6+</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <span class="filter-group-label">Sort</span>
+                            <select class="filter-select" id="filter-sort">
+                                <option value="popularity.desc">Popularity</option>
+                                <option value="vote_average.desc">Rating</option>
+                                <option value="first_air_date.desc">Newest</option>
+                            </select>
+                        </div>
+                        <button class="filter-submit-btn" id="filter-submit">Apply Filters</button>
                     </div>
 
                     <div class="filter-section-title">Genre</div>
                     <div class="genre-grid" id="anime-genre-grid">
                         ${ANIME_GENRES.map(g => `<button class="genre-pill" data-type="${g.type}" data-id="${g.id}">${g.name}</button>`).join('')}
                     </div>
-                    
-                    <button class="filter-submit-btn" id="filter-submit">Filter</button>
                 </div>
             </div>
 
@@ -465,11 +465,13 @@
             </div>`;
 
         // Handle Filter Toggle
-        const filterHeader = document.getElementById('anime-filter-header');
+        const toggleBtn = document.getElementById('anime-filter-toggle-btn');
         const filterContent = document.getElementById('anime-filter-content');
-        filterHeader.addEventListener('click', () => {
-            filterHeader.classList.toggle('open');
+        const topRow = document.getElementById('anime-filter-top-row');
+        toggleBtn.addEventListener('click', () => {
+            toggleBtn.classList.toggle('open');
             filterContent.classList.toggle('show');
+            topRow.classList.toggle('has-border');
         });
 
         // Handle genre selection
@@ -477,8 +479,8 @@
             btn.addEventListener('click', () => btn.classList.toggle('active'));
         });
 
-        // Handle Filter Submission
-        document.getElementById('filter-submit').addEventListener('click', async () => {
+        // Handle Search and Filter Submit logic
+        const triggerSearch = async () => {
             const resultsContainer = document.getElementById('anime-filter-results-container');
             resultsContainer.innerHTML = `<div id="anime-grid-spinner" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 48px; width: 100%;">
                 <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
@@ -570,6 +572,12 @@
                 animeFilterState.loading = false;
                 resultsContainer.innerHTML = `<div class="empty-state"><h3>Filter failed</h3><p>${e.message}</p></div>`;
             }
+        };
+
+        document.getElementById('filter-submit').addEventListener('click', triggerSearch);
+        document.getElementById('filter-search-btn').addEventListener('click', triggerSearch);
+        document.getElementById('filter-search').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') triggerSearch();
         });
 
         async function loadMoreAnimeFilterResults() {
