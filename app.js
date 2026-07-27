@@ -246,7 +246,6 @@
         watch_region: 'US' 
     };
     const fetchAnimeTopAiring = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'popularity.desc', 'air_date.lte': new Date().toISOString().split('T')[0] });
-    const fetchAnimePopular = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'popularity.desc' });
     const fetchAnimeFavorite = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'vote_average.desc', 'vote_count.gte': 1000 });
     const fetchAnimeCompleted = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'first_air_date.desc', 'vote_count.gte': 50, with_status: '3' });
 
