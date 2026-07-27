@@ -233,7 +233,6 @@
                 case 'tv': renderBrowse('tv'); currentPage = 'tv'; break;
                 case 'movie': renderDetail('movie', id); currentPage = 'detail'; break;
                 case 'show': renderDetail('tv', id); currentPage = 'detail'; break;
-                case 'search': renderSearch(); currentPage = 'search'; break;
                 case 'watchlist': renderWatchlist(); currentPage = 'watchlist'; break;
                 case 'f1': renderF1(); currentPage = 'f1'; break;
                 case 'anime': renderAnime(); currentPage = 'anime'; break;
@@ -1103,43 +1102,6 @@
         }
     }
 
-    // ========== PAGE: SEARCH ==========
-    function renderSearch() {
-        mainContent.innerHTML = `
-            <div class="search-page">
-                <h1 class="browse-title">Search</h1>
-                <div class="search-bar">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                    <input class="search-input" id="search-input" type="text" placeholder="Search movies, TV shows, people…" autofocus>
-                </div>
-                <div id="search-results"></div>
-            </div>
-            ${footerHTML()}`;
-
-        const input = document.getElementById('search-input');
-        const results = document.getElementById('search-results');
-
-        input.addEventListener('input', debounce(async () => {
-            const q = input.value.trim();
-            if (q.length < 2) { results.innerHTML = ''; return; }
-
-            results.innerHTML = `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; width: 100%;">
-                <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
-            </div>`;
-
-            try {
-                const data = await fetchSearch(q);
-                const items = data.results.filter(i => (i.media_type === 'movie' || i.media_type === 'tv') && i.poster_path);
-                if (!items.length) {
-                    results.innerHTML = `<div class="empty-state"><h3>No results</h3><p>Try a different search term.</p></div>`;
-                    return;
-                }
-                results.innerHTML = `<p class="search-results-title">${data.total_results} results for "${q}"</p><div class="grid">${items.map(i => cardHTML(i, true)).join('')}</div>`;
-            } catch (e) {
-                results.innerHTML = `<div class="empty-state"><h3>Search failed</h3><p>${e.message}</p></div>`;
-            }
-        }, 350));
-    }
 
     // ========== PAGE: WATCHLIST ==========
     function renderWatchlist() {
@@ -1823,6 +1785,79 @@
         }
         if (API_KEY) router();
     });
+
+    // ========== GLOBAL SEARCH LOGIC ==========
+    const globalSearchInput = document.getElementById('global-search-input');
+    const globalSearchSuggestions = document.getElementById('global-search-suggestions');
+    let globalSearchTimeout = null;
+
+    if(globalSearchInput) {
+        globalSearchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            if (globalSearchTimeout) clearTimeout(globalSearchTimeout);
+            
+            if (query.length < 2) {
+                globalSearchSuggestions.style.display = 'none';
+                globalSearchSuggestions.innerHTML = '';
+                return;
+            }
+
+            globalSearchSuggestions.style.display = 'block';
+            globalSearchSuggestions.innerHTML = `<div class="search-suggestion-item" style="justify-content: center; padding: 12px;"><div class="skeleton-card" style="width: 24px; height: 24px; border-radius: 50%; min-height: 24px;"></div></div>`;
+
+            globalSearchTimeout = setTimeout(async () => {
+                try {
+                    const data = await api('/search/multi', { query, page: 1, include_adult: 'false' });
+                    
+                    const filteredResults = data.results.filter(item => 
+                        (item.media_type === 'tv' || item.media_type === 'movie') && !item.adult
+                    ).slice(0, 6);
+
+                    if (filteredResults.length > 0) {
+                        globalSearchSuggestions.innerHTML = filteredResults.map(item => {
+                            const title = item.title || item.name;
+                            const date = item.release_date || item.first_air_date || '';
+                            const year = date ? date.substring(0,4) : '';
+                            const poster = item.poster_path ? `${IMG_BASE}w92${item.poster_path}` : 'placeholder.jpg';
+                            const type = item.media_type || (item.title ? 'movie' : 'tv');
+                            const hashType = type === 'tv' ? 'show' : 'movie';
+                            
+                            return \`
+                            <div class="search-suggestion-item" onclick="window.location.hash='#/\${hashType}/\${item.id}'; document.getElementById('global-search-suggestions').style.display='none'; document.getElementById('global-search-input').value='';">
+                                <img src="\${poster}" class="search-suggestion-poster" alt="\${title}">
+                                <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden;">
+                                    <div class="search-suggestion-title">\${title}</div>
+                                    <div class="search-suggestion-meta">\${year} • \${type === 'movie' ? 'Movie' : 'TV Show'}</div>
+                                </div>
+                            </div>\`;
+                        }).join('');
+                    } else {
+                        globalSearchSuggestions.innerHTML = \`<div class="search-suggestion-item" style="color: var(--text-muted); justify-content: center; padding: 12px;">No results found</div>\`;
+                    }
+                } catch (e) {
+                    globalSearchSuggestions.innerHTML = \`<div class="search-suggestion-item" style="color: var(--text-muted); justify-content: center; padding: 12px;">Error loading results</div>\`;
+                }
+            }, 300);
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#global-search-container')) {
+                globalSearchSuggestions.style.display = 'none';
+            }
+        });
+        
+        // Handle Enter key auto-click first suggestion
+        globalSearchInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                e.preventDefault();
+                const firstResult = globalSearchSuggestions.querySelector('.search-suggestion-item');
+                if(firstResult && !firstResult.textContent.includes('No results') && !firstResult.textContent.includes('Error')) {
+                    firstResult.click();
+                }
+            }
+        });
+    }
 
     init();
     // ========== DYNAMIC MOUSE GLOW ==========
