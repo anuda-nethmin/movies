@@ -452,12 +452,23 @@
             try {
                 // If type is movie, we use discover/movie, else discover/tv
                 const endpoint = type === 'movie' ? '/discover/movie' : '/discover/tv';
-                const data = await api(endpoint, params);
+                
+                // Fetch up to 4 pages concurrently to load as many results as possible
+                const [page1, page2, page3, page4] = await Promise.all([
+                    api(endpoint, { ...params, page: 1 }),
+                    api(endpoint, { ...params, page: 2 }),
+                    api(endpoint, { ...params, page: 3 }),
+                    api(endpoint, { ...params, page: 4 })
+                ]);
+                
+                // Combine and remove duplicates just in case
+                const combined = [...page1.results, ...page2.results, ...page3.results, ...page4.results];
+                const uniqueResults = Array.from(new Map(combined.map(item => [item.id, item])).values());
                 
                 resultsContainer.innerHTML = `
                 <div class="section" style="padding-top: 24px;">
-                    <div class="section-header"><h2 class="section-title">Filter <span class="accent">Results</span></h2></div>
-                    <div class="grid">${data.results.map(i => cardHTML(i, true)).join('')}</div>
+                    <div class="section-header"><h2 class="section-title">Filter <span class="accent">Results</span> <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal; margin-left: 10px;">(${uniqueResults.length} found)</span></h2></div>
+                    <div class="grid">${uniqueResults.map(i => cardHTML(i, true)).join('')}</div>
                 </div>
                 ${footerHTML()}`;
             } catch (e) {
