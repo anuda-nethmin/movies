@@ -184,11 +184,10 @@
     };
     
     // Anime API Functions
-    const animeBaseParams = { with_genres: '16', with_original_language: 'ja', without_keywords: '210024,281488,11523', include_adult: 'false' };
-    const fetchAnimeTopAiring = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'popularity.desc', 'air_date.lte': new Date().toISOString().split('T')[0] });
-    const fetchAnimePopular = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'popularity.desc' });
-    const fetchAnimeFavorite = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'vote_average.desc', 'vote_count.gte': 1000 });
-    const fetchAnimeCompleted = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'first_air_date.desc', 'vote_count.gte': 50, with_status: '3' });
+    const fetchAnimeTopAiring = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'popularity.desc', 'air_date.lte': new Date().toISOString().split('T')[0] });
+    const fetchAnimePopular = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'popularity.desc' });
+    const fetchAnimeFavorite = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'vote_average.desc', 'vote_count.gte': 1000 });
+    const fetchAnimeCompleted = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'first_air_date.desc', 'vote_count.gte': 50, with_status: '3' });
 
     const fetchGenres = type => api(`/genre/${type}/list`);
 
@@ -513,9 +512,7 @@
             const params = {
                 with_genres: genres.join(','),
                 with_original_language: 'ja',
-                sort_by: sort,
-                without_keywords: '210024,281488,11523',
-                include_adult: 'false'
+                sort_by: sort
             };
             if(keywords.length > 0) params.with_keywords = keywords.join(',');
             if(status !== 'all') params.with_status = status;
@@ -610,12 +607,11 @@
 
             searchTimeout = setTimeout(async () => {
                 try {
-                    const data = await api('/search/multi', { query, page: 1, include_adult: 'false' });
+                    const data = await api('/search/multi', { query, page: 1 });
                     // Filter for anime-likely results (Japanese original language)
                     const animeResults = data.results.filter(item => 
                         item.original_language === 'ja' && 
-                        (item.media_type === 'tv' || item.media_type === 'movie') &&
-                        !item.adult
+                        (item.media_type === 'tv' || item.media_type === 'movie')
                     ).slice(0, 6); // top 6 suggestions
 
                     if (animeResults.length > 0) {
