@@ -1535,7 +1535,6 @@
         { name: 'VidCore', getMovie: id => `https://vidcore.org/embed/movie?tmdb=${id}`, getTv: (id, s, e) => `https://vidcore.org/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
         { name: 'VidSrc PRO', getMovie: id => `https://vidsrc.pro/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.pro/embed/tv/${id}/${s}/${e}` },
         { name: 'Anime (AutoEmbed)', getMovie: id => `https://autoembed.to/movie/tmdb/${id}`, getTv: (id, s, e) => `https://autoembed.to/tv/tmdb/${id}-${s}-${e}` },
-        { name: 'Anime (Embed.su)', getMovie: id => `https://embed.su/embed/movie/${id}`, getTv: (id, s, e) => `https://embed.su/embed/tv/${id}/${s}/${e}` },
         { name: 'Anime (NontonGo)', getMovie: id => `https://nontongo.win/embed/movie/${id}`, getTv: (id, s, e) => `https://nontongo.win/embed/tv/${id}/${s}/${e}` }
     ];
 
