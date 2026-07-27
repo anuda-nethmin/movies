@@ -427,7 +427,7 @@ input { font-family: inherit; }
     width: 100%;
     height: clamp(420px, 65vh, 700px);
     overflow: hidden;
-    margin-bottom: 32px;
+    margin-bottom: 8px;
 }
 
 .hero-backdrop {
