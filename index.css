@@ -1128,17 +1128,23 @@ input { font-family: inherit; }
 
 /* ---------- Back Button ---------- */
 .back-btn {
+    position: absolute;
+    top: calc(var(--navbar-height) + 16px);
+    left: 48px;
+    z-index: 10;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     padding: 10px 20px;
-    margin: 24px 48px 0;
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--text-secondary);
     background: rgba(255,255,255,0.05);
     border-radius: 10px;
-    transition: all var(--transition-fast);
+    transition: all 0.2s;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
 .back-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.1); }
@@ -2364,7 +2370,7 @@ input { font-family: inherit; }
     .detail-title { font-size: 1.3rem; }
     .detail-info { max-width: 100%; }
     .detail-body { padding: 20px 16px; }
-    .back-btn { margin: 16px 16px 0; padding: 8px 14px; font-size: 0.8rem; }
+    .back-btn { left: 16px; padding: 8px 14px; font-size: 0.8rem; }
 
     /* --- Inline Video Player --- */
     .inline-player-wrapper {
