@@ -1951,6 +1951,7 @@ input { font-family: inherit; }
     flex: 1;
     display: flex;
     min-width: 300px;
+    align-items: flex-start; /* Prevents height locking so white box wraps content perfectly */
 }
 .f1-col-side:first-child {
     justify-content: flex-end;
@@ -2067,7 +2068,7 @@ input { font-family: inherit; }
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 300px; /* Keep shorter so Past & Upcoming stack nicely */
+    max-height: 600px; /* Increased to show more items */
     overflow-y: auto;
     padding-right: 4px;
 }
@@ -2096,8 +2097,8 @@ input { font-family: inherit; }
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    gap: 8px; /* reduced to prevent overflow */
-    padding: 10px 12px; /* reduced */
+    gap: 12px;
+    padding: 14px 16px; /* Increased padding to make cards taller */
     background: var(--bg-card);
     border-radius: 10px;
     border: 1px solid var(--border-subtle);
