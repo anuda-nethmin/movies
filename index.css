@@ -1358,14 +1358,32 @@ input { font-family: inherit; }
     color: var(--color-red);
 }
 /* ---------- Inline Video Player ---------- */
+.top-content-wrapper {
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    padding: 40px 48px;
+    max-width: 1600px;
+    margin: 0 auto;
+    align-items: flex-start;
+    width: 100%;
+}
+
+@media (max-width: 1100px) {
+    .top-content-wrapper {
+        flex-direction: column;
+        padding: 20px 24px;
+    }
+}
+
 .inline-player-wrapper {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+    flex: 2;
     background: #0a0a0a;
-    padding: 30px 48px;
+    padding: 30px;
     display: none;
     flex-direction: column;
+    border-radius: 12px;
 }
 
 .player-header {
@@ -1506,9 +1524,13 @@ input { font-family: inherit; }
 
 /* ---------- Episodes List ---------- */
 .episodes-section {
-    padding: 0 48px;
-    margin-top: 40px;
+    flex: 1;
+    min-width: 320px;
     display: none;
+    width: 100%;
+    background: #0a0a0a;
+    padding: 20px 24px;
+    border-radius: 12px;
 }
 
 .episodes-header {
@@ -1558,8 +1580,15 @@ input { font-family: inherit; }
     flex-direction: column;
     border: 1px solid #222;
     border-radius: 12px;
-    overflow: hidden;
+    overflow-y: auto;
+    max-height: 600px;
+    padding-right: 4px; /* for scrollbar spacing */
 }
+
+.episodes-list::-webkit-scrollbar { width: 6px; }
+.episodes-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+.episodes-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.episodes-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
 .episode-card {
     display: flex;
@@ -1580,12 +1609,12 @@ input { font-family: inherit; }
 
 .episode-card.active {
     background: #151515;
-    border-left: 3px solid #f5c518;
+    border-left: 3px solid var(--accent-primary);
 }
 
 .ep-thumbnail {
-    width: 200px;
-    height: 112px;
+    width: 140px;
+    height: 78px;
     border-radius: 8px;
     object-fit: cover;
     flex-shrink: 0;

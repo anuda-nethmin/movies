@@ -552,36 +552,6 @@
                         Back
                     </button>
                     
-                    <!-- Inline Video Player -->
-                    <div id="inline-player-wrapper" class="inline-player-wrapper">
-                        <div class="player-header">
-                            <span class="now-playing-text" id="now-playing-text">NOW PLAYING</span>
-                            <div class="autoplay-toggle">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="3" fill="#000"/></svg>
-                                Autoplay next
-                            </div>
-                        </div>
-                        <div class="server-list" id="inline-server-selector">
-                            <span class="server-label">SERVERS</span>
-                            <!-- Servers injected here -->
-                        </div>
-                        <div class="video-container">
-                            <iframe id="inline-video-iframe" src="" frameborder="0" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true"></iframe>
-                        </div>
-                        <div class="player-footer">
-                            <div class="streaming-via">Streaming via <span id="current-server-name">VidLink</span>. If playback fails or shows ads, try a different server above.</div>
-                            <div id="next-up-container" style="display:none;">
-                                <div class="next-up-card" id="next-up-card">
-                                    <div>
-                                        <div class="next-up-label">NEXT UP</div>
-                                        <div class="next-up-title" id="next-up-title">Loading...</div>
-                                    </div>
-                                    <svg class="next-up-arrow" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div id="detail-backdrop-wrap" class="detail-backdrop-wrap">
                         <div class="detail-backdrop" style="background-image:url('${backdropUrl(data.backdrop_path)}')"></div>
                         <div class="detail-hero">
@@ -616,13 +586,45 @@
                         </div>
                     </div>
 
-                    <!-- Episodes Section -->
-                    <div id="episodes-section" class="episodes-section">
-                        <div class="episodes-header">
-                            <h3>Episodes</h3>
-                            <div class="season-toggles" id="season-toggles"></div>
+                    <div id="top-content-wrapper" class="top-content-wrapper">
+                        <!-- Inline Video Player -->
+                        <div id="inline-player-wrapper" class="inline-player-wrapper">
+                            <div class="player-header">
+                                <span class="now-playing-text" id="now-playing-text">NOW PLAYING</span>
+                                <div class="autoplay-toggle">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="3" fill="#000"/></svg>
+                                    Autoplay next
+                                </div>
+                            </div>
+                            <div class="server-list" id="inline-server-selector">
+                                <span class="server-label">SERVERS</span>
+                                <!-- Servers injected here -->
+                            </div>
+                            <div class="video-container">
+                                <iframe id="inline-video-iframe" src="" frameborder="0" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true"></iframe>
+                            </div>
+                            <div class="player-footer">
+                                <div class="streaming-via">Streaming via <span id="current-server-name">VidLink</span>. If playback fails or shows ads, try a different server above.</div>
+                                <div id="next-up-container" style="display:none;">
+                                    <div class="next-up-card" id="next-up-card">
+                                        <div>
+                                            <div class="next-up-label">NEXT UP</div>
+                                            <div class="next-up-title" id="next-up-title">Loading...</div>
+                                        </div>
+                                        <svg class="next-up-arrow" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="episodes-list" id="episodes-list"></div>
+
+                        <!-- Episodes Section -->
+                        <div id="episodes-section" class="episodes-section">
+                            <div class="episodes-header">
+                                <h3>Episodes</h3>
+                                <div class="season-toggles" id="season-toggles"></div>
+                            </div>
+                            <div class="episodes-list" id="episodes-list"></div>
+                        </div>
                     </div>
 
                     <div class="detail-body">
