@@ -427,7 +427,7 @@ input { font-family: inherit; }
     width: 100%;
     height: clamp(420px, 65vh, 700px);
     overflow: hidden;
-    margin-bottom: 8px;
+    margin-bottom: 0px;
 }
 
 .hero-backdrop {
@@ -454,7 +454,7 @@ input { font-family: inherit; }
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
-    padding: 0 48px 48px;
+    padding: 0 48px 16px;
     max-width: 650px;
 }
 
