@@ -765,7 +765,7 @@
                 
                 <div class="top-content-wrapper">
                     <!-- Schedule on Left -->
-                    <div class="episodes-section" style="display: block;">
+                    <div class="episodes-section f1-schedule-section" style="display: block;">
                         <h2 class="detail-section-title" style="margin-top: 0; margin-bottom: 20px; font-size: 1.3rem;">\u{1F3CE}\u{FE0F} Race Calendar</h2>
                         <div id="f1-countdown-wrap"></div>
                         <div id="f1-calendar" class="f1-calendar">
@@ -800,23 +800,41 @@
             const calEl = document.getElementById('f1-calendar');
             if (!calEl) return;
 
-            calEl.innerHTML = races.map((race, i) => {
+            const renderCard = (race, i, isPast, isNext) => {
                 const rd = new Date(race.date + 'T' + (race.time || '00:00:00Z'));
-                const isPast = i < nextIdx;
-                const isNext = i === nextIdx;
                 const flag = getFlag(race.Circuit.Location.country);
-                const day = rd.toLocaleDateString('en-GB', {weekday:'short'});
                 const date = rd.toLocaleDateString('en-GB', {day:'numeric',month:'short'});
                 const time = rd.toLocaleTimeString('en-GB', {hour:'2-digit',minute:'2-digit'});
-                const sprint = race.Sprint ? '<span class="f1-sprint-badge">SPRINT</span>' : '';
+                const sprint = race.Sprint ? '<span class="f1-sprint-badge">S</span>' : '';
                 const status = isPast ? '<span class="f1-status-done">\u2713</span>' : isNext ? '<span class="f1-status-next">NEXT</span>' : '<span class="f1-status-upcoming">\u2014</span>';
+                
                 return '<div class="f1-race-card' + (isPast ? ' past' : '') + (isNext ? ' next' : '') + '">' +
                     '<div class="f1-race-round">R' + race.round + '</div>' +
-                    '<div class="f1-race-flag">' + flag + '</div>' +
+                    '<div class="f1-race-flag" style="font-size:1.2rem;">' + flag + '</div>' +
                     '<div class="f1-race-details"><div class="f1-race-name">' + race.raceName + '</div><div class="f1-race-circuit">' + race.Circuit.circuitName + '</div></div>' +
-                    '<div class="f1-race-date-block"><div class="f1-race-date">' + day + ' ' + date + '</div><div class="f1-race-time">' + time + ' local</div>' + sprint + '</div>' +
+                    '<div class="f1-race-date-block"><div class="f1-race-date">' + date + '</div><div class="f1-race-time">' + time + '</div>' + sprint + '</div>' +
                     '<div class="f1-race-status">' + status + '</div></div>';
-            }).join('');
+            };
+
+            const pastRaces = races.slice(0, nextIdx);
+            const futureRaces = races.slice(nextIdx);
+
+            calEl.innerHTML = `
+                <div class="f1-calendar-split">
+                    <div class="f1-calendar-col">
+                        <h3 class="f1-col-title">Past Races</h3>
+                        <div class="f1-col-list">
+                            ${pastRaces.map((r, i) => renderCard(r, i, true, false)).join('')}
+                        </div>
+                    </div>
+                    <div class="f1-calendar-col">
+                        <h3 class="f1-col-title">Upcoming</h3>
+                        <div class="f1-col-list">
+                            ${futureRaces.map((r, i) => renderCard(r, i, false, i === 0)).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
 
             if (nextIdx < races.length) {
                 const nr = races[nextIdx];

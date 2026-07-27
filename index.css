@@ -1802,11 +1802,44 @@ input { font-family: inherit; }
     50% { opacity: 0.5; }
 }
 
-.f1-calendar {
+.f1-schedule-section {
+    max-width: 700px !important;
+}
+
+.f1-calendar-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 800px) {
+    .f1-calendar-split {
+        grid-template-columns: 1fr;
+    }
+}
+
+.f1-col-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.f1-col-list {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
+    max-height: 550px;
+    overflow-y: auto;
+    padding-right: 4px;
 }
+
+.f1-col-list::-webkit-scrollbar { width: 6px; }
+.f1-col-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 4px; }
+.f1-col-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.f1-col-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
 .f1-race-card {
     display: flex;
