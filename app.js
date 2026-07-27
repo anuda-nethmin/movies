@@ -183,11 +183,17 @@
         return api(`/discover/${type}`, params);
     };
     
-    // Anime API Functions
-    const fetchAnimeTopAiring = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'popularity.desc', 'air_date.lte': new Date().toISOString().split('T')[0] });
-    const fetchAnimePopular = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'popularity.desc' });
-    const fetchAnimeFavorite = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'vote_average.desc', 'vote_count.gte': 1000 });
-    const fetchAnimeCompleted = () => api('/discover/tv', { with_genres: '16', with_original_language: 'ja', sort_by: 'first_air_date.desc', 'vote_count.gte': 50, with_status: '3' });
+    // Anime API Functions (Filtered by Crunchyroll Watch Provider ID 283)
+    const animeBaseParams = { 
+        with_genres: '16', 
+        with_original_language: 'ja', 
+        with_watch_providers: '283', 
+        watch_region: 'US' 
+    };
+    const fetchAnimeTopAiring = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'popularity.desc', 'air_date.lte': new Date().toISOString().split('T')[0] });
+    const fetchAnimePopular = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'popularity.desc' });
+    const fetchAnimeFavorite = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'vote_average.desc', 'vote_count.gte': 1000 });
+    const fetchAnimeCompleted = () => api('/discover/tv', { ...animeBaseParams, sort_by: 'first_air_date.desc', 'vote_count.gte': 50, with_status: '3' });
 
     const fetchGenres = type => api(`/genre/${type}/list`);
 
@@ -512,7 +518,9 @@
             const params = {
                 with_genres: genres.join(','),
                 with_original_language: 'ja',
-                sort_by: sort
+                sort_by: sort,
+                with_watch_providers: '283',
+                watch_region: 'US'
             };
             if(keywords.length > 0) params.with_keywords = keywords.join(',');
             if(status !== 'all') params.with_status = status;
