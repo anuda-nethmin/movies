@@ -122,6 +122,11 @@
 [data-theme="light"] .f1-countdown-unit span {
     color: #0f172a;
 }
+[data-theme="light"] .f1-race-flag {
+    color: #333;
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.1);
+}
 
 /* Theme Switcher UI */
 .header-actions {
@@ -2118,8 +2123,17 @@ input { font-family: inherit; }
 }
 
 .f1-race-flag {
-    font-size: 1.6rem;
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 6px;
+    border-radius: 4px;
+    letter-spacing: 1px;
     line-height: 1;
+    border: 1px solid rgba(255,255,255,0.1);
+    min-width: 32px;
+    text-align: center;
 }
 
 .f1-race-details {

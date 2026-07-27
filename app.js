@@ -881,15 +881,15 @@
             calEl.innerHTML = `
                 <div class="f1-calendar-split">
                     <div class="f1-calendar-col">
-                        <h3 class="f1-col-title">Past Races</h3>
+                        <h3 class="f1-col-title">Upcoming Races</h3>
                         <div class="f1-col-list">
-                            ${pastRaces.map((r, i) => renderCard(r, i, true, false)).join('')}
+                            ${futureRaces.map((r, i) => renderCard(r, i, false, i === 0)).join('')}
                         </div>
                     </div>
                     <div class="f1-calendar-col">
-                        <h3 class="f1-col-title">Upcoming</h3>
+                        <h3 class="f1-col-title">Past Races</h3>
                         <div class="f1-col-list">
-                            ${futureRaces.map((r, i) => renderCard(r, i, false, i === 0)).join('')}
+                            ${pastRaces.map((r, i) => renderCard(r, i, true, false)).join('')}
                         </div>
                     </div>
                 </div>
