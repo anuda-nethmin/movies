@@ -339,14 +339,131 @@
         return `<footer class="page-footer">&copy; ${new Date().getFullYear()} Anuflix. Data from <a href="https://www.themoviedb.org" target="_blank" rel="noopener">TMDB</a>.</footer>`;
     }
 
+    // ========== ANIME GENRE MAPPINGS ==========
+    const ANIME_GENRES = [
+        { name: 'Action', type: 'genre', id: '10759' },
+        { name: 'Comedy', type: 'genre', id: '35' },
+        { name: 'Sci-Fi', type: 'genre', id: '10765' },
+        { name: 'Shounen', type: 'keyword', id: '209714' },
+        { name: 'Isekai', type: 'keyword', id: '279090' },
+        { name: 'Mecha', type: 'keyword', id: '278550' },
+        { name: 'Magic', type: 'keyword', id: '2343' },
+        { name: 'Supernatural', type: 'keyword', id: '278516' },
+        { name: 'Romance', type: 'keyword', id: '9840' },
+        { name: 'Slice of Life', type: 'keyword', id: '279058' },
+        { name: 'Sports', type: 'keyword', id: '279095' },
+        { name: 'Demons', type: 'keyword', id: '278546' },
+        { name: 'School', type: 'keyword', id: '211910' }
+    ];
+
     // ========== PAGE: ANIME ==========
     async function renderAnime() {
         mainContent.innerHTML = `
-            ${skeletonHero()}
-            <div class="section"><div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>${skeletonCards()}</div>
-            <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Popular</span></h2></div>${skeletonCards()}</div>
-            <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Favorite</span></h2></div>${skeletonCards()}</div>
-            <div class="section"><div class="section-header"><h2 class="section-title">Latest <span class="accent">Completed</span></h2></div>${skeletonCards()}</div>`;
+            <!-- Advanced Filter UI -->
+            <div class="anime-filter-container">
+                <div class="filter-section-title">Filter</div>
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <span class="filter-group-label">Type</span>
+                        <select class="filter-select" id="filter-type">
+                            <option value="all">All</option>
+                            <option value="tv">TV</option>
+                            <option value="movie">Movie</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-group-label">Status</span>
+                        <select class="filter-select" id="filter-status">
+                            <option value="all">All</option>
+                            <option value="0">Returning Series</option>
+                            <option value="3">Ended</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-group-label">Score</span>
+                        <select class="filter-select" id="filter-score">
+                            <option value="all">All</option>
+                            <option value="9">9+</option>
+                            <option value="8">8+</option>
+                            <option value="7">7+</option>
+                            <option value="6">6+</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <span class="filter-group-label">Sort</span>
+                        <select class="filter-select" id="filter-sort">
+                            <option value="popularity.desc">Popularity</option>
+                            <option value="vote_average.desc">Rating</option>
+                            <option value="first_air_date.desc">Newest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-section-title">Genre</div>
+                <div class="genre-grid" id="anime-genre-grid">
+                    ${ANIME_GENRES.map(g => `<button class="genre-pill" data-type="${g.type}" data-id="${g.id}">${g.name}</button>`).join('')}
+                </div>
+                
+                <button class="filter-submit-btn" id="filter-submit">Filter</button>
+            </div>
+
+            <div id="anime-results-container">
+                ${skeletonHero()}
+                <div class="section"><div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>${skeletonCards()}</div>
+                <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Popular</span></h2></div>${skeletonCards()}</div>
+                <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Favorite</span></h2></div>${skeletonCards()}</div>
+                <div class="section"><div class="section-header"><h2 class="section-title">Latest <span class="accent">Completed</span></h2></div>${skeletonCards()}</div>
+            </div>`;
+
+        // Handle genre selection
+        document.querySelectorAll('.genre-pill').forEach(btn => {
+            btn.addEventListener('click', () => btn.classList.toggle('active'));
+        });
+
+        // Handle Filter Submission
+        document.getElementById('filter-submit').addEventListener('click', async () => {
+            const resultsContainer = document.getElementById('anime-results-container');
+            resultsContainer.innerHTML = `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 48px; width: 100%;">
+                <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
+            </div>`;
+            
+            const type = document.getElementById('filter-type').value;
+            const status = document.getElementById('filter-status').value;
+            const score = document.getElementById('filter-score').value;
+            const sort = document.getElementById('filter-sort').value;
+            
+            let genres = ['16']; // Always include animation
+            let keywords = [];
+
+            document.querySelectorAll('.genre-pill.active').forEach(btn => {
+                if(btn.dataset.type === 'genre') genres.push(btn.dataset.id);
+                else keywords.push(btn.dataset.id);
+            });
+
+            const params = {
+                with_genres: genres.join(','),
+                with_original_language: 'ja',
+                sort_by: sort
+            };
+            if(keywords.length > 0) params.with_keywords = keywords.join(',');
+            if(status !== 'all') params.with_status = status;
+            if(score !== 'all') params['vote_average.gte'] = score;
+
+            try {
+                // If type is movie, we use discover/movie, else discover/tv
+                const endpoint = type === 'movie' ? '/discover/movie' : '/discover/tv';
+                const data = await api(endpoint, params);
+                
+                resultsContainer.innerHTML = `
+                <div class="section" style="padding-top: 24px;">
+                    <div class="section-header"><h2 class="section-title">Filter <span class="accent">Results</span></h2></div>
+                    <div class="grid">${data.results.map(i => cardHTML(i, true)).join('')}</div>
+                </div>
+                ${footerHTML()}`;
+            } catch (e) {
+                resultsContainer.innerHTML = `<div class="empty-state"><h3>Filter failed</h3><p>${e.message}</p></div>`;
+            }
+        });
 
         try {
             const [topAiring, mostPopular, mostFavorite, latestCompleted] = await Promise.all([
@@ -356,10 +473,11 @@
                 fetchAnimeCompleted()
             ]);
 
-            // Select a hero anime from top airing
             const hero = topAiring.results[0] || mostPopular.results[0];
+            const resultsContainer = document.getElementById('anime-results-container');
+            if (!resultsContainer) return;
 
-            mainContent.innerHTML = `
+            resultsContainer.innerHTML = `
                 ${heroHTML(hero)}
                 <div class="section">
                     <div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>
@@ -381,7 +499,8 @@
             
             initCarousels();
         } catch (e) {
-            mainContent.innerHTML = `<div class="empty-state"><h3>Failed to load Anime</h3><p>${e.message}</p></div>`;
+            const resultsContainer = document.getElementById('anime-results-container');
+            if (resultsContainer) resultsContainer.innerHTML = `<div class="empty-state"><h3>Failed to load Anime</h3><p>${e.message}</p></div>`;
         }
     }
 

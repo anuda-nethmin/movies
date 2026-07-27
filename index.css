@@ -2487,3 +2487,101 @@ input { font-family: inherit; }
 .animate-in:nth-child(4) { animation-delay: 0.2s; }
 .animate-in:nth-child(5) { animation-delay: 0.25s; }
 .animate-in:nth-child(6) { animation-delay: 0.3s; }
+
+/* ========== ADVANCED ANIME FILTER UI ========== */
+.anime-filter-container {
+    padding: 24px 48px;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-subtle);
+}
+.filter-section-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+.filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+.filter-group {
+    display: flex;
+    align-items: center;
+    background: rgba(45, 45, 60, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    padding: 0 12px;
+    height: 40px;
+}
+.filter-group-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-right: 8px;
+    white-space: nowrap;
+}
+.filter-select {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    padding-right: 16px;
+}
+.filter-select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+.date-group {
+    display: flex;
+    gap: 4px;
+}
+.genre-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 32px;
+}
+.genre-pill {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    padding: 6px 14px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.genre-pill:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+}
+.genre-pill.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--text-primary);
+    border-color: var(--text-primary);
+}
+.filter-submit-btn {
+    background: #fdfdfd;
+    color: #111;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.filter-submit-btn:hover {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .anime-filter-container { padding: 20px 16px; }
+}
