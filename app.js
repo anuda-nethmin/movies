@@ -676,6 +676,13 @@
             // Initialize Video & TV logic if it's a TV show
             if (type === 'tv' && data.number_of_seasons) {
                 initTvEpisodes(data.id, data.seasons);
+            } else if (type === 'movie') {
+                currentVideoState.id = data.id;
+                currentVideoState.type = 'movie';
+                currentVideoState.season = 1;
+                currentVideoState.episode = 1;
+                showInlinePlayer();
+                updateInlineVideoFrame();
             }
 
             initCarousels();
@@ -1113,11 +1120,28 @@
         
         const validSeasons = seasons ? seasons.filter(s => s.season_number > 0) : [{season_number: 1}];
         
+        // Find last watched from continue watching
+        const continueList = getContinueWatching();
+        const cwItem = continueList.find(i => i.id == id && i.type === 'tv');
+        let targetSeason = validSeasons[0].season_number;
+        let targetEpisode = 1;
+        
+        if (cwItem && cwItem.season && cwItem.episode) {
+            targetSeason = parseInt(cwItem.season);
+            targetEpisode = parseInt(cwItem.episode);
+        }
+        
+        currentVideoState.season = targetSeason;
+        currentVideoState.episode = targetEpisode;
+        
         toggles.innerHTML = validSeasons.map((s, i) => 
-            `<button class="season-pill ${i === 0 ? 'active' : ''}" data-season="${s.season_number}">Season ${s.season_number}</button>`
+            `<button class="season-pill ${s.season_number === targetSeason ? 'active' : ''}" data-season="${s.season_number}">Season ${s.season_number}</button>`
         ).join('');
         
-        await loadEpisodesUI(id, validSeasons[0].season_number);
+        await loadEpisodesUI(id, targetSeason);
+        
+        showInlinePlayer();
+        updateInlineVideoFrame();
     }
 
     async function loadEpisodesUI(tvId, seasonNumber) {
