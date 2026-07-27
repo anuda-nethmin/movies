@@ -2084,7 +2084,7 @@ input { font-family: inherit; }
     gap: 20px;
 }
 
-@container (min-width: 680px) {
+@container (min-width: 750px) {
     .f1-calendar-split {
         grid-template-columns: 1fr 1fr;
     }
@@ -2097,8 +2097,8 @@ input { font-family: inherit; }
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 14px 16px; /* Increased padding to make cards taller */
+    gap: 8px; /* Strict gap */
+    padding: 10px 10px; /* Strict padding */
     background: var(--bg-card);
     border-radius: 10px;
     border: 1px solid var(--border-subtle);
@@ -2161,11 +2161,14 @@ input { font-family: inherit; }
     font-size: 0.75rem;
     color: var(--text-muted);
     margin-top: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .f1-race-date-block {
     text-align: right;
-    min-width: 80px; /* reduced from 110px */
+    min-width: 65px; /* Extremely compact */
 }
 
 .f1-race-date {
@@ -2194,7 +2197,7 @@ input { font-family: inherit; }
 }
 
 .f1-race-status {
-    min-width: 48px;
+    min-width: 36px;
     text-align: center;
 }
 
