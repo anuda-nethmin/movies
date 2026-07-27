@@ -13,9 +13,10 @@
         const rating = item.vote_average ? item.vote_average.toFixed(1) : 'NR';
         const poster = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : 'placeholder.jpg';
         const type = item.title ? 'movie' : 'tv';
+        const hashType = type === 'tv' ? 'show' : 'movie';
 
         return `
-        <div class="anime-list-item" onclick="window.location.hash='#/${type}/${item.id}'">
+        <div class="anime-list-item" onclick="window.location.hash='#/${hashType}/${item.id}'">
             <img class="anime-list-poster" src="${poster}" alt="${title}" loading="lazy">
             <div class="anime-list-info">
                 <div class="anime-list-title" title="${title}">${title}</div>
@@ -629,9 +630,10 @@
                             const year = date ? date.substring(0,4) : '';
                             const poster = item.poster_path ? `${IMG_BASE}w92${item.poster_path}` : 'placeholder.jpg';
                             const type = item.media_type || (item.title ? 'movie' : 'tv');
+                            const hashType = type === 'tv' ? 'show' : 'movie';
                             
                             return `
-                            <div class="search-suggestion-item" onclick="window.location.hash='#/${type}/${item.id}'">
+                            <div class="search-suggestion-item" onclick="window.location.hash='#/${hashType}/${item.id}'">
                                 <img src="${poster}" class="search-suggestion-poster" alt="${title}">
                                 <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden;">
                                     <div class="search-suggestion-title">${title}</div>
