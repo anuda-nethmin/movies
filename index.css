@@ -2518,9 +2518,62 @@ input { font-family: inherit; }
     gap: 12px;
     align-items: center;
     padding: 12px 24px;
+    position: relative;
 }
 .anime-filter-top-row.has-border {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.filter-search-container {
+    position: relative;
+    flex: 1;
+}
+.search-suggestions {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    max-height: 400px;
+    overflow-y: auto;
+    display: none;
+}
+.search-suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: background 0.2s;
+}
+.search-suggestion-item:last-child {
+    border-bottom: none;
+}
+.search-suggestion-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+.search-suggestion-poster {
+    width: 32px;
+    height: 48px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.search-suggestion-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.search-suggestion-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 .anime-filter-toggle-btn {
     display: flex;

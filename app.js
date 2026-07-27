@@ -394,9 +394,12 @@
         mainContent.innerHTML = `
             <div class="anime-filter-wrapper">
                 <div class="anime-filter-top-row" id="anime-filter-top-row">
-                    <div class="filter-group" style="flex: 1; margin: 0; background: rgba(0,0,0,0.2);">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                        <input type="text" class="filter-search-input" id="filter-search" placeholder="Search anime..." style="width: 100%;">
+                    <div class="filter-search-container">
+                        <div class="filter-group" style="margin: 0; background: rgba(0,0,0,0.2); width: 100%;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                            <input type="text" class="filter-search-input" id="filter-search" placeholder="Search anime..." style="width: 100%;">
+                        </div>
+                        <div id="filter-search-suggestions" class="search-suggestions"></div>
                     </div>
                     <button class="filter-submit-btn" id="filter-search-btn" style="padding: 8px 16px; margin: 0;">Search</button>
                     <div class="anime-filter-toggle-btn" id="anime-filter-toggle-btn">
@@ -576,8 +579,76 @@
 
         document.getElementById('filter-submit').addEventListener('click', triggerSearch);
         document.getElementById('filter-search-btn').addEventListener('click', triggerSearch);
-        document.getElementById('filter-search').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') triggerSearch();
+        
+        // Handle Search Autocomplete
+        const searchInput = document.getElementById('filter-search');
+        const suggestionsBox = document.getElementById('filter-search-suggestions');
+        let searchTimeout = null;
+
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            if (searchTimeout) clearTimeout(searchTimeout);
+            
+            if (query.length < 2) {
+                suggestionsBox.style.display = 'none';
+                return;
+            }
+
+            searchTimeout = setTimeout(async () => {
+                try {
+                    const data = await api('/search/multi', { query, page: 1 });
+                    // Filter for anime-likely results (Japanese original language)
+                    const animeResults = data.results.filter(item => 
+                        item.original_language === 'ja' && 
+                        (item.media_type === 'tv' || item.media_type === 'movie')
+                    ).slice(0, 6); // top 6 suggestions
+
+                    if (animeResults.length > 0) {
+                        suggestionsBox.innerHTML = animeResults.map(item => {
+                            const title = item.title || item.name;
+                            const date = item.release_date || item.first_air_date || '';
+                            const year = date ? date.substring(0,4) : '';
+                            const poster = item.poster_path ? `${IMG_BASE}w92${item.poster_path}` : 'placeholder.jpg';
+                            const type = item.media_type || (item.title ? 'movie' : 'tv');
+                            
+                            return `
+                            <div class="search-suggestion-item" onclick="window.location.hash='${type}/${item.id}'">
+                                <img src="${poster}" class="search-suggestion-poster" alt="${title}">
+                                <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden;">
+                                    <div class="search-suggestion-title">${title}</div>
+                                    <div class="search-suggestion-meta">${year} • ${type.toUpperCase()}</div>
+                                </div>
+                            </div>
+                            `;
+                        }).join('');
+                        suggestionsBox.style.display = 'block';
+                    } else {
+                        suggestionsBox.style.display = 'none';
+                    }
+                } catch(e) {
+                    suggestionsBox.style.display = 'none';
+                }
+            }, 300);
+        });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+                suggestionsBox.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('focus', () => {
+            if (suggestionsBox.innerHTML && searchInput.value.trim().length >= 2) {
+                suggestionsBox.style.display = 'block';
+            }
+        });
+
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                suggestionsBox.style.display = 'none';
+                triggerSearch();
+            }
         });
 
         async function loadMoreAnimeFilterResults() {
