@@ -197,7 +197,6 @@
                 case 'search': renderSearch(); currentPage = 'search'; break;
                 case 'watchlist': renderWatchlist(); currentPage = 'watchlist'; break;
                 case 'f1': renderF1(); currentPage = 'f1'; break;
-                case 'cricket': renderCricket(); currentPage = 'cricket'; break;
                 default: renderHome(); currentPage = 'home';
             }
 
@@ -963,54 +962,6 @@
         } catch(e) {
             const c = document.getElementById('f1-calendar');
             if (c) c.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Failed to load race calendar.</p>';
-        }
-    }
-
-    // ========== PAGE: CRICKET ==========
-    function renderCricket() {
-        mainContent.innerHTML = `
-            <div class="detail-page" style="position: relative; overflow: hidden; padding-top: 100px; min-height: 100vh;">
-                <!-- Reusing F1 animated background for consistency -->
-                <div class="f1-animated-bg">
-                    <div class="f1-particles"></div>
-                </div>
-
-                <div style="position: relative; z-index: 10; max-width: 1400px; margin: 0 auto; padding: 20px;">
-                    <div class="f1-header-block" style="text-align: center; margin-bottom: 40px;">
-                        <h1 style="font-size: 3rem; font-weight: 900; margin-bottom: 10px; color: var(--text-primary);">LIVE CRICKET</h1>
-                        <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Stream live cricket matches globally.</p>
-                    </div>
-
-                    <div style="display: flex; justify-content: center; width: 100%;">
-                        <div class="f1-col-center inline-player-wrapper f1-player-box" style="width: 100%; max-width: 1000px;">
-                            <div class="player-header">
-                                <span class="now-playing-text">NOW PLAYING — CRICKET LIVE</span>
-                            </div>
-                            <div class="f1-stream-container" style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-                                <iframe src="https://webcric.com/" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"></iframe>
-                            </div>
-                            <div class="player-footer">
-                                <div class="streaming-via">Streaming via WebCric. Please close any ad popups that appear on their site.</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            ${footerHTML()}
-        `;
-        
-        // Re-use particle animation for the background
-        const f1Bg = document.querySelector('.f1-particles');
-        if (f1Bg) {
-            for (let i = 0; i < 30; i++) {
-                const p = document.createElement('div');
-                p.className = 'f1-particle';
-                p.style.left = Math.random() * 100 + '%';
-                p.style.top = Math.random() * 100 + '%';
-                p.style.animationDelay = Math.random() * 5 + 's';
-                p.style.opacity = Math.random() * 0.5 + 0.1;
-                f1Bg.appendChild(p);
-            }
         }
     }
 
