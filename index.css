@@ -1980,7 +1980,7 @@ input { font-family: inherit; }
         min-width: 0;
         flex: 0 0 auto; /* Stop 1100px from applying to height! */
         width: 100%;
-        max-width: 1100px; /* Keep it from getting too massively wide */
+        max-width: 850px; /* Force player to be a normal comfortable size on laptops */
     }
 }
 
