@@ -827,8 +827,8 @@
                         <div class="player-header">
                             <span class="now-playing-text">NOW PLAYING — F1 LIVE</span>
                         </div>
-                        <div class="f1-stream-container" style="width: 100%; flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); aspect-ratio: 16/9;">
-                            <iframe src="https://westreamf1.com/westreamf1.php" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true" height="100%" width="100%" style="border: none;"></iframe>
+                        <div class="f1-stream-container" style="position: relative; width: 100%; padding-top: 56.25%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                            <iframe src="https://westreamf1.com/westreamf1.php" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;"></iframe>
                         </div>
                         <div class="player-footer">
                             <div class="streaming-via">Streaming via WeStreamF1. If playback fails, the session may not be live yet.</div>
