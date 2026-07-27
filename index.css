@@ -453,8 +453,8 @@ input { font-family: inherit; }
     height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: flex-end;
-    padding: 0 48px 80px;
+    justify-content: center;
+    padding: 0 48px;
     max-width: 650px;
 }
 
@@ -2317,7 +2317,7 @@ input { font-family: inherit; }
     }
 
     /* --- Hero --- */
-    .hero-content { padding: 0 16px 48px; }
+    .hero-content { padding: 0 16px; }
     .hero { height: clamp(300px, 50vh, 450px); }
     .hero-title { font-size: 1.5rem; }
     .hero-overview { -webkit-line-clamp: 2; font-size: 0.82rem; }
@@ -2447,7 +2447,7 @@ input { font-family: inherit; }
 
     .hero { height: clamp(260px, 45vh, 380px); }
     .hero-title { font-size: 1.3rem; }
-    .hero-content { padding: 0 14px 40px; max-width: 100%; }
+    .hero-content { padding: 0 14px; max-width: 100%; }
 
     .detail-poster { width: 100px; }
     .detail-title { font-size: 1.15rem; }
