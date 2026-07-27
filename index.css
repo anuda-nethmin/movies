@@ -1965,7 +1965,7 @@ input { font-family: inherit; }
     display: flex;
     flex-direction: column;
 }
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
     .f1-3col-wrapper {
         flex-direction: column;
         align-items: center;
@@ -1981,6 +1981,7 @@ input { font-family: inherit; }
 }
 
 .f1-schedule-container {
+    box-sizing: border-box;
     width: 100%;
     min-width: 300px;
     background: #0a0a0a;
@@ -1991,6 +1992,7 @@ input { font-family: inherit; }
 }
 
 .f1-standings-container {
+    box-sizing: border-box;
     width: 100%;
     min-width: 300px;
     background: #0a0a0a;
@@ -2001,6 +2003,7 @@ input { font-family: inherit; }
 }
 
 .f1-player-box {
+    box-sizing: border-box;
     background: #0a0a0a;
     padding: 24px;
     border-radius: 12px;
@@ -2089,6 +2092,7 @@ input { font-family: inherit; }
 }
 
 .f1-race-card {
+    box-sizing: border-box;
     display: flex;
     align-items: center;
     gap: 8px; /* reduced to prevent overflow */
@@ -2098,6 +2102,7 @@ input { font-family: inherit; }
     border: 1px solid var(--border-subtle);
     transition: all 0.2s ease;
     overflow: hidden; /* safety fallback */
+    width: 100%;
 }
 
 .f1-race-card:hover {
@@ -2139,6 +2144,7 @@ input { font-family: inherit; }
 .f1-race-details {
     flex: 1;
     min-width: 0;
+    overflow: hidden; /* Fix flexbox truncation */
 }
 
 .f1-race-name {
