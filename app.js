@@ -186,17 +186,17 @@
         };
     };
 
-    const fetchTrending = (type = 'all', time = 'week') => fetchMulti(`/trending/${type}/${time}`, {}, 1, 2);
-    const fetchPopular = (type = 'movie', page = 1) => fetchMulti(`/${type}/popular`, {}, page, 2);
-    const fetchTopRated = (type = 'movie', page = 1) => fetchMulti(`/${type}/top_rated`, {}, page, 2);
-    const fetchNowPlaying = () => fetchMulti('/movie/now_playing', {}, 1, 2);
-    const fetchAiringToday = () => fetchMulti('/tv/airing_today', {}, 1, 2);
+    const fetchTrending = (type = 'all', time = 'week') => fetchMulti(`/trending/${type}/${time}`, {}, 1, 5);
+    const fetchPopular = (type = 'movie', page = 1) => fetchMulti(`/${type}/popular`, {}, page, 5);
+    const fetchTopRated = (type = 'movie', page = 1) => fetchMulti(`/${type}/top_rated`, {}, page, 5);
+    const fetchNowPlaying = () => fetchMulti('/movie/now_playing', {}, 1, 5);
+    const fetchAiringToday = () => fetchMulti('/tv/airing_today', {}, 1, 5);
     const fetchDetails = (type, id) => api(`/${type}/${id}`, { append_to_response: 'credits,recommendations,videos' });
     const fetchSearch = (query, page = 1) => api('/search/multi', { query, page });
     const fetchDiscover = (type, page = 1, genre = '') => {
         const params = { sort_by: 'popularity.desc' };
         if (genre) params.with_genres = genre;
-        return fetchMulti(`/discover/${type}`, params, page, 2);
+        return fetchMulti(`/discover/${type}`, params, page, 5);
     };
     
     // Anime API Functions (Filtered by Crunchyroll Watch Provider ID 283)
