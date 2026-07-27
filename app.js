@@ -483,7 +483,13 @@
         });
 
         // Handle Search and Filter Submit logic
+        let searchTimeout = null;
+        
         const triggerSearch = async () => {
+            if (searchTimeout) clearTimeout(searchTimeout);
+            const suggestionsBox = document.getElementById('filter-search-suggestions');
+            if (suggestionsBox) suggestionsBox.style.display = 'none';
+
             const resultsContainer = document.getElementById('anime-filter-results-container');
             resultsContainer.innerHTML = `<div id="anime-grid-spinner" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 48px; width: 100%;">
                 <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
@@ -589,7 +595,6 @@
         // Handle Search Autocomplete
         const searchInput = document.getElementById('filter-search');
         const suggestionsBox = document.getElementById('filter-search-suggestions');
-        let searchTimeout = null;
 
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.trim();
