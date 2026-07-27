@@ -427,7 +427,7 @@ input { font-family: inherit; }
     width: 100%;
     height: clamp(420px, 65vh, 700px);
     overflow: hidden;
-    margin-bottom: -150px;
+    margin-bottom: 0px;
 }
 
 .hero-backdrop {
@@ -597,6 +597,12 @@ input { font-family: inherit; }
     margin-bottom: 36px;
     position: relative;
     z-index: 5;
+}
+
+.overlap-hero {
+    margin-top: -150px;
+    position: relative;
+    z-index: 10;
 }
 
 .section-header {

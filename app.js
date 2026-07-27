@@ -814,22 +814,24 @@
             // Render columns with a max of 10 items per column for a clean look
             defaultContainer.innerHTML = `
                 ${heroHTML(hero)}
-                <div class="anime-columns-wrapper">
-                    <div class="anime-column">
-                        <span class="anime-column-title">Top Airing</span>
-                        ${topAiring.results.slice(1, 11).map(i => animeListItemHTML(i)).join('')}
-                    </div>
-                    <div class="anime-column">
-                        <span class="anime-column-title">Most Popular</span>
-                        ${mostPopular.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
-                    </div>
-                    <div class="anime-column">
-                        <span class="anime-column-title">Most Favorite</span>
-                        ${mostFavorite.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
-                    </div>
-                    <div class="anime-column">
-                        <span class="anime-column-title">Completed</span>
-                        ${latestCompleted.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
+                <div class="overlap-hero">
+                    <div class="anime-columns-wrapper">
+                        <div class="anime-column">
+                            <span class="anime-column-title">Top Airing</span>
+                            ${topAiring.results.slice(1, 11).map(i => animeListItemHTML(i)).join('')}
+                        </div>
+                        <div class="anime-column">
+                            <span class="anime-column-title">Most Popular</span>
+                            ${mostPopular.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
+                        </div>
+                        <div class="anime-column">
+                            <span class="anime-column-title">Most Favorite</span>
+                            ${mostFavorite.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
+                        </div>
+                        <div class="anime-column">
+                            <span class="anime-column-title">Completed</span>
+                            ${latestCompleted.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
+                        </div>
                     </div>
                 </div>
                 ${footerHTML()}`;
@@ -845,12 +847,14 @@
     async function renderHome() {
         mainContent.innerHTML = `
             ${skeletonHero()}
-            <div class="section"><div class="section-header"><h2 class="section-title">Top 10 Today</h2></div>${skeletonCards(10)}</div>
-            <div class="section"><div class="section-header"><h2 class="section-title">Trending This Week</h2></div>${skeletonCards()}</div>
-            <div class="section"><div class="section-header"><h2 class="section-title">Now Playing</h2></div>${skeletonCards()}</div>
-            <div class="section"><div class="section-header"><h2 class="section-title">Top Rated Movies</h2></div>${skeletonCards()}</div>
-            <div class="section"><div class="section-header"><h2 class="section-title">Popular TV Shows</h2></div>${skeletonCards()}</div>
-            <div class="section"><div class="section-header"><h2 class="section-title">Top Rated TV</h2></div>${skeletonCards()}</div>`;
+            <div class="overlap-hero">
+                <div class="section"><div class="section-header"><h2 class="section-title">Top 10 Today</h2></div>${skeletonCards(10)}</div>
+                <div class="section"><div class="section-header"><h2 class="section-title">Trending This Week</h2></div>${skeletonCards()}</div>
+                <div class="section"><div class="section-header"><h2 class="section-title">Now Playing</h2></div>${skeletonCards()}</div>
+                <div class="section"><div class="section-header"><h2 class="section-title">Top Rated Movies</h2></div>${skeletonCards()}</div>
+                <div class="section"><div class="section-header"><h2 class="section-title">Popular TV Shows</h2></div>${skeletonCards()}</div>
+                <div class="section"><div class="section-header"><h2 class="section-title">Top Rated TV</h2></div>${skeletonCards()}</div>
+            </div>`;
 
         try {
             const [trending, trendDay, nowPlaying, topMovies, popTV, topTV] = await Promise.all([
@@ -867,47 +871,49 @@
 
             mainContent.innerHTML = `
                 ${heroHTML(hero)}
-                ${continueWatchingHTML()}
-                <div class="section">
-                    <div class="section-header"><h2 class="section-title">Top 10 <span class="accent">Today</span></h2></div>
-                    ${top10HTML(top10)}
-                </div>
-                <div class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Trending <span class="accent">This Week</span></h2>
-                        <a href="#/movies" class="see-all">See All →</a>
+                <div class="overlap-hero">
+                    ${continueWatchingHTML()}
+                    <div class="section">
+                        <div class="section-header"><h2 class="section-title">Top 10 <span class="accent">Today</span></h2></div>
+                        ${top10HTML(top10)}
                     </div>
-                    ${carouselHTML(trending.results.slice(1, 21), 'c-trending')}
-                </div>
-                <div class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Now Playing</h2>
-                        <a href="#/movies" class="see-all">See All →</a>
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Trending <span class="accent">This Week</span></h2>
+                            <a href="#/movies" class="see-all">See All →</a>
+                        </div>
+                        ${carouselHTML(trending.results.slice(1, 21), 'c-trending')}
                     </div>
-                    ${carouselHTML(nowPlaying.results, 'c-now')}
-                </div>
-                <div class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Top Rated <span class="accent">Movies</span></h2>
-                        <a href="#/movies" class="see-all">See All →</a>
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Now Playing</h2>
+                            <a href="#/movies" class="see-all">See All →</a>
+                        </div>
+                        ${carouselHTML(nowPlaying.results, 'c-now')}
                     </div>
-                    ${carouselHTML(topMovies.results, 'c-top-movies')}
-                </div>
-                <div class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Popular <span class="accent">TV Shows</span></h2>
-                        <a href="#/tv" class="see-all">See All →</a>
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Top Rated <span class="accent">Movies</span></h2>
+                            <a href="#/movies" class="see-all">See All →</a>
+                        </div>
+                        ${carouselHTML(topMovies.results, 'c-top-movies')}
                     </div>
-                    ${carouselHTML(popTV.results, 'c-pop-tv')}
-                </div>
-                <div class="section">
-                    <div class="section-header">
-                        <h2 class="section-title">Top Rated <span class="accent">TV</span></h2>
-                        <a href="#/tv" class="see-all">See All →</a>
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Popular <span class="accent">TV Shows</span></h2>
+                            <a href="#/tv" class="see-all">See All →</a>
+                        </div>
+                        ${carouselHTML(popTV.results, 'c-pop-tv')}
                     </div>
-                    ${carouselHTML(topTV.results, 'c-top-tv')}
-                </div>
-                ${footerHTML()}`;
+                    <div class="section">
+                        <div class="section-header">
+                            <h2 class="section-title">Top Rated <span class="accent">TV</span></h2>
+                            <a href="#/tv" class="see-all">See All →</a>
+                        </div>
+                        ${carouselHTML(topTV.results, 'c-top-tv')}
+                    </div>
+                    ${footerHTML()}
+                </div>`;
             setTimeout(loadHeroTrailer, 500);
 
             // Continue Watching clear button
@@ -1527,7 +1533,7 @@
         { name: '2Embed', getMovie: id => `https://www.2embed.cc/embed/${id}`, getTv: (id, s, e) => `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` },
         { name: 'MultiEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
         { name: 'AutoEmbed', getMovie: id => `https://autoembed.to/movie/tmdb/${id}`, getTv: (id, s, e) => `https://autoembed.to/tv/tmdb/${id}-${s}-${e}` },
-        { name: 'Anime (AniWave)', getMovie: id => `https://aniwave.live/embed/${id}`, getTv: (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=38bdf8&autoplay=false&fallback=true` }
+        { name: 'Anime (AniWave)', getMovie: id => `https://vidsrc.net/embed/movie?tmdb=${id}`, getTv: (id, s, e) => `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` }
     ];
 
     let currentVideoState = { id: null, type: null, serverIndex: 0, season: 1, episode: 1, episodesData: [] };
