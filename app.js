@@ -393,10 +393,18 @@
 
         mainContent.innerHTML = `
             <!-- Advanced Filter UI -->
-            <div class="anime-filter-container">
-                <div class="filter-section-title">Filter</div>
-                <div class="filter-row">
-                    <div class="filter-group">
+            <div class="anime-filter-wrapper">
+                <div class="anime-filter-header" id="anime-filter-header">
+                    <div class="anime-filter-header-title">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                        Advanced Filters
+                    </div>
+                    <svg class="anime-filter-header-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                
+                <div class="anime-filter-content" id="anime-filter-content">
+                    <div class="filter-row" style="margin-top:20px;">
+                        <div class="filter-group">
                         <span class="filter-group-label">Type</span>
                         <select class="filter-select" id="filter-type">
                             <option value="all">All</option>
@@ -434,14 +442,14 @@
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                         <input type="text" class="filter-search-input" id="filter-search" placeholder="Search anime...">
                     </div>
-                </div>
 
-                <div class="filter-section-title">Genre</div>
-                <div class="genre-grid" id="anime-genre-grid">
-                    ${ANIME_GENRES.map(g => `<button class="genre-pill" data-type="${g.type}" data-id="${g.id}">${g.name}</button>`).join('')}
+                    <div class="filter-section-title">Genre</div>
+                    <div class="genre-grid" id="anime-genre-grid">
+                        ${ANIME_GENRES.map(g => `<button class="genre-pill" data-type="${g.type}" data-id="${g.id}">${g.name}</button>`).join('')}
+                    </div>
+                    
+                    <button class="filter-submit-btn" id="filter-submit">Filter</button>
                 </div>
-                
-                <button class="filter-submit-btn" id="filter-submit">Filter</button>
             </div>
 
             <div id="anime-filter-results-container"></div>
@@ -455,6 +463,14 @@
                     <div class="anime-column"><div class="anime-column-title">Completed</div>${skeletonCards().replace(/card/g, 'anime-list-item').replace(/skeleton-card/g, 'skeleton-list-item')}</div>
                 </div>
             </div>`;
+
+        // Handle Filter Toggle
+        const filterHeader = document.getElementById('anime-filter-header');
+        const filterContent = document.getElementById('anime-filter-content');
+        filterHeader.addEventListener('click', () => {
+            filterHeader.classList.toggle('open');
+            filterContent.classList.toggle('show');
+        });
 
         // Handle genre selection
         document.querySelectorAll('.genre-pill').forEach(btn => {
