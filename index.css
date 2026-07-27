@@ -2526,7 +2526,7 @@ input { font-family: inherit; }
 }
 .filter-search-container {
     position: relative;
-    flex: 1;
+    width: 300px; /* Fixed width instead of flex: 1 */
 }
 .search-suggestions {
     position: absolute;
