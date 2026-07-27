@@ -344,7 +344,7 @@
         return `
         <div class="hero">
             <div class="hero-backdrop" style="background-image:url('${backdropUrl(item.backdrop_path)}')"></div>
-            <div class="hero-content">
+            <div class="hero-content-new">
                 <div class="hero-tagline">Featured Today</div>
                 <h1 class="hero-title">${itemTitle(item)}</h1>
                 <div class="hero-meta">
