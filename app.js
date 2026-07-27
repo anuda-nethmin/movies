@@ -1531,7 +1531,7 @@
         { name: 'VidSrc VIP', getMovie: id => `https://vidsrc.vip/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.vip/embed/tv/${id}/${s}/${e}` },
         { name: 'SmashyStream', getMovie: id => `https://embed.smashystream.com/playere.php?tmdb=${id}`, getTv: (id, s, e) => `https://embed.smashystream.com/playere.php?tmdb=${id}&season=${s}&ep=${e}` },
         { name: '2Embed', getMovie: id => `https://www.2embed.cc/embed/${id}`, getTv: (id, s, e) => `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` },
-        { name: 'MultiEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
+        { name: 'MultiEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1&server=gdrive`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}&server=gdrive` },
         { name: 'Anime (AutoEmbed)', getMovie: id => `https://autoembed.to/movie/tmdb/${id}`, getTv: (id, s, e) => `https://autoembed.to/tv/tmdb/${id}-${s}-${e}` }
     ];
 
