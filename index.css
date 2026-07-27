@@ -115,13 +115,6 @@
 [data-theme="light"] .f1-standing-team {
     color: rgba(0, 0, 0, 0.5);
 }
-[data-theme="light"] .f1-countdown-unit {
-    background: #f1f5f9;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
-[data-theme="light"] .f1-countdown-unit span {
-    color: #0f172a;
-}
 [data-theme="light"] .f1-race-flag {
     color: #333;
     background: rgba(0, 0, 0, 0.05);
