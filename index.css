@@ -2596,4 +2596,81 @@ input { font-family: inherit; }
 
 @media (max-width: 768px) {
     .anime-filter-container { padding: 20px 16px; }
+    .anime-columns-wrapper {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ========== ANIME COLUMNS LAYOUT ========== */
+.anime-columns-wrapper {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 0 48px 48px;
+}
+.anime-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.anime-column-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 8px;
+    display: inline-block;
+}
+.anime-list-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.2s, transform 0.2s;
+    cursor: pointer;
+}
+.anime-list-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(4px);
+}
+.anime-list-poster {
+    width: 45px;
+    height: 65px;
+    border-radius: 4px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+.anime-list-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+}
+.anime-list-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.anime-list-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.skeleton-list-item {
+    height: 81px;
+    background: var(--surface-light);
+    border-radius: 8px;
+    animation: shimmer 1.5s infinite linear;
+    background: linear-gradient(90deg, var(--surface-light) 0%, rgba(255,255,255,0.05) 50%, var(--surface-light) 100%);
+    background-size: 200% 100%;
 }

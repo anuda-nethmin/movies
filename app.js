@@ -4,6 +4,31 @@
 (() => {
     'use strict';
 
+    // ========== COMPACT LIST ITEM UI (For Anime Columns) ==========
+    function animeListItemHTML(item) {
+        if (!item) return '';
+        const title = item.title || item.name;
+        const date = item.release_date || item.first_air_date || 'N/A';
+        const year = date !== 'N/A' ? date.substring(0,4) : 'N/A';
+        const rating = item.vote_average ? item.vote_average.toFixed(1) : 'NR';
+        const poster = item.poster_path ? `https://image.tmdb.org/t/p/w200${item.poster_path}` : 'placeholder.jpg';
+        const type = item.title ? 'movie' : 'tv';
+
+        return `
+        <div class="anime-list-item" onclick="window.location.hash='${type}/${item.id}'">
+            <img class="anime-list-poster" src="${poster}" alt="${title}" loading="lazy">
+            <div class="anime-list-info">
+                <div class="anime-list-title" title="${title}">${title}</div>
+                <div class="anime-list-meta">
+                    <span class="rating"><svg width="12" height="12" viewBox="0 0 24 24" fill="var(--accent)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> ${rating}</span>
+                    <span>•</span>
+                    <span>${year}</span>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+
     // ========== CONFIG ==========
     const BASE_URL = 'https://api.themoviedb.org/3';
     const IMG_BASE = 'https://image.tmdb.org/t/p/';
@@ -421,12 +446,14 @@
 
             <div id="anime-filter-results-container"></div>
 
-            <div id="anime-default-container">
+            <div id="anime-default-container" style="padding-top: 24px;">
                 ${skeletonHero()}
-                <div class="section"><div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>${skeletonCards()}</div>
-                <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Popular</span></h2></div>${skeletonCards()}</div>
-                <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Favorite</span></h2></div>${skeletonCards()}</div>
-                <div class="section"><div class="section-header"><h2 class="section-title">Latest <span class="accent">Completed</span></h2></div>${skeletonCards()}</div>
+                <div class="anime-columns-wrapper">
+                    <div class="anime-column"><div class="anime-column-title">Top Airing</div>${skeletonCards().replace(/card/g, 'anime-list-item').replace(/skeleton-card/g, 'skeleton-list-item')}</div>
+                    <div class="anime-column"><div class="anime-column-title">Most Popular</div>${skeletonCards().replace(/card/g, 'anime-list-item').replace(/skeleton-card/g, 'skeleton-list-item')}</div>
+                    <div class="anime-column"><div class="anime-column-title">Most Favorite</div>${skeletonCards().replace(/card/g, 'anime-list-item').replace(/skeleton-card/g, 'skeleton-list-item')}</div>
+                    <div class="anime-column"><div class="anime-column-title">Completed</div>${skeletonCards().replace(/card/g, 'anime-list-item').replace(/skeleton-card/g, 'skeleton-list-item')}</div>
+                </div>
             </div>`;
 
         // Handle genre selection
@@ -569,27 +596,29 @@
             const defaultContainer = document.getElementById('anime-default-container');
             if (!defaultContainer) return;
 
+            // Render columns with a max of 10 items per column for a clean look
             defaultContainer.innerHTML = `
                 ${heroHTML(hero)}
-                <div class="section">
-                    <div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>
-                    ${carouselHTML(topAiring.results.slice(1))}
-                </div>
-                <div class="section">
-                    <div class="section-header"><h2 class="section-title">Most <span class="accent">Popular</span></h2></div>
-                    ${carouselHTML(mostPopular.results)}
-                </div>
-                <div class="section">
-                    <div class="section-header"><h2 class="section-title">Most <span class="accent">Favorite</span></h2></div>
-                    ${carouselHTML(mostFavorite.results)}
-                </div>
-                <div class="section">
-                    <div class="section-header"><h2 class="section-title">Latest <span class="accent">Completed</span></h2></div>
-                    ${carouselHTML(latestCompleted.results)}
+                <div class="anime-columns-wrapper">
+                    <div class="anime-column">
+                        <span class="anime-column-title">Top Airing</span>
+                        ${topAiring.results.slice(1, 11).map(i => animeListItemHTML(i)).join('')}
+                    </div>
+                    <div class="anime-column">
+                        <span class="anime-column-title">Most Popular</span>
+                        ${mostPopular.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
+                    </div>
+                    <div class="anime-column">
+                        <span class="anime-column-title">Most Favorite</span>
+                        ${mostFavorite.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
+                    </div>
+                    <div class="anime-column">
+                        <span class="anime-column-title">Completed</span>
+                        ${latestCompleted.results.slice(0, 10).map(i => animeListItemHTML(i)).join('')}
+                    </div>
                 </div>
                 ${footerHTML()}`;
             
-            initCarousels();
         } catch (e) {
             const defaultContainer = document.getElementById('anime-default-container');
             if (defaultContainer) defaultContainer.innerHTML = `<div class="empty-state"><h3>Failed to load Anime</h3><p>${e.message}</p></div>`;
