@@ -2784,17 +2784,20 @@ input { font-family: inherit; }
 .global-search-wrapper {
     display: flex;
     align-items: center;
-    background: rgba(45, 45, 60, 0.6);
+    background: var(--bg-secondary);
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-subtle);
     border-radius: 24px;
     padding: 8px 16px;
     transition: all 0.3s;
 }
 .global-search-wrapper:focus-within {
-    background: rgba(45, 45, 60, 0.9);
+    background: var(--bg-card);
     border-color: var(--accent);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 64, 129, 0.2);
+}
+[data-theme="light"] .global-search-wrapper:focus-within {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 10px rgba(255, 64, 129, 0.1);
 }
 .global-search-icon {
     color: var(--text-muted);
