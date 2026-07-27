@@ -57,6 +57,23 @@
         saveWatchlist(list);
     }
 
+    // ========== WATCHED EPISODES ==========
+    const getWatchedEpisodes = () => JSON.parse(localStorage.getItem('streamline_watched_episodes') || '{}');
+    const saveWatchedEpisodes = data => localStorage.setItem('streamline_watched_episodes', JSON.stringify(data));
+    const markWatched = (showId, season, episode) => {
+        let watched = getWatchedEpisodes();
+        if (!watched[showId]) watched[showId] = [];
+        const epStr = `${season}-${episode}`;
+        if (!watched[showId].includes(epStr)) {
+            watched[showId].push(epStr);
+            saveWatchedEpisodes(watched);
+        }
+    };
+    const isWatched = (showId, season, episode) => {
+        let watched = getWatchedEpisodes();
+        return watched[showId] && watched[showId].includes(`${season}-${episode}`);
+    };
+
     // ========== CONTINUE WATCHING ==========
     const getContinueWatching = () => JSON.parse(localStorage.getItem('anuflix_continue') || '[]');
     const saveContinueWatching = list => localStorage.setItem('anuflix_continue', JSON.stringify(list));
@@ -587,6 +604,15 @@
                     </div>
 
                     <div id="top-content-wrapper" class="top-content-wrapper">
+                        <!-- Episodes Section -->
+                        <div id="episodes-section" class="episodes-section">
+                            <div class="episodes-header">
+                                <h3>Episodes</h3>
+                                <div class="season-toggles" id="season-toggles"></div>
+                            </div>
+                            <div class="episodes-list" id="episodes-list"></div>
+                        </div>
+
                         <!-- Inline Video Player -->
                         <div id="inline-player-wrapper" class="inline-player-wrapper">
                             <div class="player-header">
@@ -615,15 +641,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Episodes Section -->
-                        <div id="episodes-section" class="episodes-section">
-                            <div class="episodes-header">
-                                <h3>Episodes</h3>
-                                <div class="season-toggles" id="season-toggles"></div>
-                            </div>
-                            <div class="episodes-list" id="episodes-list"></div>
                         </div>
                     </div>
 
@@ -960,14 +977,17 @@
             return;
         }
 
-        // Episode Card Click
-        const epCard = e.target.closest('.episode-card');
+        // Episode Square Click
+        const epCard = e.target.closest('.episode-square');
         if (epCard) {
-            document.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.episode-square').forEach(c => c.classList.remove('active'));
             epCard.classList.add('active');
+            epCard.classList.add('watched');
             
             currentVideoState.season = parseInt(epCard.dataset.season);
             currentVideoState.episode = parseInt(epCard.dataset.episode);
+            
+            markWatched(currentVideoState.id, currentVideoState.season, currentVideoState.episode);
             
             showInlinePlayer();
             updateInlineVideoFrame();
@@ -992,14 +1012,47 @@
         const nextUpCard = e.target.closest('.next-up-card');
         if (nextUpCard) {
             currentVideoState.episode++;
+            markWatched(currentVideoState.id, currentVideoState.season, currentVideoState.episode);
             updateInlineVideoFrame();
             updateNextUp();
             // Also highlight the new active card
-            const nextCard = document.querySelector(`.episode-card[data-episode="${currentVideoState.episode}"]`);
+            const nextCard = document.querySelector(`.episode-square[data-episode="${currentVideoState.episode}"]`);
             if (nextCard) {
-                document.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.episode-square').forEach(c => c.classList.remove('active'));
                 nextCard.classList.add('active');
+                nextCard.classList.add('watched');
             }
+        }
+    });
+
+    // Global tooltip for episode squares
+    const epTooltip = document.createElement('div');
+    epTooltip.className = 'global-episode-tooltip';
+    document.body.appendChild(epTooltip);
+
+    mainContent.addEventListener('mouseover', e => {
+        const sq = e.target.closest('.episode-square');
+        if (sq) {
+            epTooltip.innerHTML = `
+                <img src="${sq.dataset.thumb}" class="ep-tooltip-thumb" alt="">
+                <div class="ep-tooltip-info">
+                    <div class="ep-tooltip-title">${sq.dataset.title}</div>
+                    <div class="ep-tooltip-meta">${sq.dataset.meta}</div>
+                    <div class="ep-tooltip-overview">${sq.dataset.overview}</div>
+                </div>
+            `;
+            const rect = sq.getBoundingClientRect();
+            // Position tooltip to the right of the square
+            epTooltip.style.top = `${rect.top + window.scrollY - 20}px`;
+            epTooltip.style.left = `${rect.right + 15}px`;
+            epTooltip.classList.add('visible');
+        }
+    });
+
+    mainContent.addEventListener('mouseout', e => {
+        const sq = e.target.closest('.episode-square');
+        if (sq) {
+            epTooltip.classList.remove('visible');
         }
     });
 
@@ -1081,18 +1134,19 @@
                 const date = ep.air_date || 'Unknown Date';
                 const runtimeStr = ep.runtime ? `${ep.runtime}m` : '';
                 const isActive = (currentVideoState.season === seasonNumber && currentVideoState.episode === ep.episode_number);
+                const isEpWatched = isWatched(currentVideoState.id, seasonNumber, ep.episode_number);
+                const cleanOverview = (ep.overview || 'No description available for this episode.').replace(/"/g, '&quot;');
+                const cleanTitle = `E${ep.episode_number}: ${ep.name.replace(/"/g, '&quot;')}`;
                 
                 return `
-                <div class="episode-card ${isActive ? 'active' : ''}" data-season="${seasonNumber}" data-episode="${ep.episode_number}">
-                    <img src="${thumb}" class="ep-thumbnail" loading="lazy" alt="E${ep.episode_number}">
-                    <div class="ep-details">
-                        <div class="ep-header">
-                            <div class="ep-title"><span>E${ep.episode_number}</span> ${ep.name}</div>
-                            <span class="ep-mark-watched">Mark Watched</span>
-                        </div>
-                        <div class="ep-overview">${ep.overview || 'No description available for this episode.'}</div>
-                        <div class="ep-meta">${date} &nbsp;·&nbsp; ${runtimeStr}</div>
-                    </div>
+                <div class="episode-square ${isActive ? 'active' : ''} ${isEpWatched ? 'watched' : ''}" 
+                     data-season="${seasonNumber}" 
+                     data-episode="${ep.episode_number}"
+                     data-thumb="${thumb}"
+                     data-title="${cleanTitle}"
+                     data-meta="${date} &nbsp;·&nbsp; ${runtimeStr}"
+                     data-overview="${cleanOverview}">
+                    ${ep.episode_number}
                 </div>`;
             }).join('');
             

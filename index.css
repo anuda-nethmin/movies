@@ -1577,12 +1577,15 @@ input { font-family: inherit; }
 
 .episodes-list {
     display: flex;
-    flex-direction: column;
-    border: 1px solid #222;
-    border-radius: 12px;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 8px;
+    border: none;
+    border-radius: 0;
     overflow-y: auto;
     max-height: 600px;
-    padding-right: 4px; /* for scrollbar spacing */
+    padding-right: 4px;
+    align-content: flex-start;
 }
 
 .episodes-list::-webkit-scrollbar { width: 6px; }
@@ -1590,85 +1593,106 @@ input { font-family: inherit; }
 .episodes-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 .episodes-list::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-.episode-card {
-    display: flex;
-    padding: 16px;
-    border-bottom: 1px solid #222;
-    background: #0a0a0a;
-    transition: background 0.2s;
-    cursor: pointer;
-}
-
-.episode-card:last-child {
-    border-bottom: none;
-}
-
-.episode-card:hover {
-    background: #111;
-}
-
-.episode-card.active {
+.episode-square {
+    position: relative;
+    width: 44px;
+    height: 44px;
     background: #151515;
-    border-left: 3px solid var(--accent-primary);
+    border: 1px solid #333;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ccc;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.ep-thumbnail {
-    width: 140px;
-    height: 78px;
+.episode-square:hover {
+    background: #222;
+    color: #fff;
+    border-color: #555;
+    z-index: 10;
+}
+
+.episode-square.watched {
+    background: rgba(16, 185, 129, 0.15);
+    color: var(--color-green);
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+.episode-square.active {
+    background: var(--accent-primary);
+    color: #fff;
+    border-color: var(--accent-primary);
+}
+
+.episode-square.active.watched {
+    background: var(--accent-primary);
+    color: #fff;
+    border-color: var(--accent-primary);
+}
+
+.global-episode-tooltip {
+    position: absolute;
+    width: 260px;
+    background: #0a0a0a;
+    border: 1px solid #333;
     border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    z-index: 9999;
+}
+
+.global-episode-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.ep-tooltip-thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
     object-fit: cover;
-    flex-shrink: 0;
+    border-radius: 6px;
     background: #222;
 }
 
-.ep-details {
-    margin-left: 20px;
+.ep-tooltip-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    flex: 1;
+    gap: 4px;
 }
 
-.ep-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
-
-.ep-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #fff;
-}
-
-.ep-title span {
-    color: #888;
-    font-weight: 400;
-    margin-right: 6px;
-}
-
-.ep-mark-watched {
-    font-size: 0.7rem;
-    color: #555;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.ep-overview {
+.ep-tooltip-title {
     font-size: 0.85rem;
-    color: #999;
-    line-height: 1.4;
-    margin-bottom: 12px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.3;
+}
+
+.ep-tooltip-meta {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.ep-tooltip-overview {
+    font-size: 0.75rem;
+    color: #aaa;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-.ep-meta {
-    font-size: 0.75rem;
-    color: #666;
+    line-height: 1.4;
 }
 
 /* ---------- Footer ---------- */
