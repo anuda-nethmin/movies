@@ -221,10 +221,11 @@
                 // Check if we are still on the same page
                 const currentHeroEl = document.querySelector('.hero');
                 if (currentHeroEl && currentHeroEl.getAttribute('data-hero-id') === id) {
+                    const origin = window.location.protocol === 'file:' ? 'http://localhost' : window.location.origin;
                     const videoHTML = `
                         <div class="hero-video-wrapper">
                             <iframe 
-                                src="https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${trailer.key}" 
+                                src="https://www.youtube.com/embed/${trailer.key}?autoplay=1&mute=1&controls=0&showinfo=0&rel=0&loop=1&playlist=${trailer.key}&enablejsapi=1&origin=${encodeURIComponent(origin)}" 
                                 frameborder="0" 
                                 allow="autoplay; encrypted-media" 
                                 onload="this.parentElement.style.opacity = '1'">
