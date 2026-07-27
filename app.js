@@ -161,27 +161,42 @@
     }
 
     // ========== API ==========
-    async function api(endpoint, params = {}) {
+    const api = async (endpoint, params = {}) => {
         const url = new URL(BASE_URL + endpoint);
-        url.searchParams.set('api_key', API_KEY);
-        url.searchParams.set('language', 'en-US');
-        Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+        url.search = new URLSearchParams({ api_key: API_KEY, language: 'en-US', ...params }).toString();
         const res = await fetch(url);
         if (!res.ok) throw new Error(`API error: ${res.status}`);
         return res.json();
     }
 
-    const fetchTrending = (type = 'all', time = 'week') => api(`/trending/${type}/${time}`);
-    const fetchPopular = (type = 'movie', page = 1) => api(`/${type}/popular`, { page });
-    const fetchTopRated = (type = 'movie', page = 1) => api(`/${type}/top_rated`, { page });
-    const fetchNowPlaying = () => api('/movie/now_playing');
-    const fetchAiringToday = () => api('/tv/airing_today');
+    const fetchMulti = async (endpoint, params = {}, logicPage = 1, multiplier = 2) => {
+        const promises = [];
+        const startPage = (logicPage - 1) * multiplier + 1;
+        for (let i = 0; i < multiplier; i++) {
+            promises.push(api(endpoint, { ...params, page: startPage + i }));
+        }
+        const responses = await Promise.all(promises);
+        const allResults = responses.flatMap(r => r.results || []);
+        const lastRes = responses[responses.length - 1];
+        return { 
+            ...lastRes, 
+            page: logicPage,
+            total_pages: Math.ceil((lastRes.total_pages || 1) / multiplier),
+            results: allResults 
+        };
+    };
+
+    const fetchTrending = (type = 'all', time = 'week') => fetchMulti(`/trending/${type}/${time}`, {}, 1, 2);
+    const fetchPopular = (type = 'movie', page = 1) => fetchMulti(`/${type}/popular`, {}, page, 2);
+    const fetchTopRated = (type = 'movie', page = 1) => fetchMulti(`/${type}/top_rated`, {}, page, 2);
+    const fetchNowPlaying = () => fetchMulti('/movie/now_playing', {}, 1, 2);
+    const fetchAiringToday = () => fetchMulti('/tv/airing_today', {}, 1, 2);
     const fetchDetails = (type, id) => api(`/${type}/${id}`, { append_to_response: 'credits,recommendations,videos' });
     const fetchSearch = (query, page = 1) => api('/search/multi', { query, page });
     const fetchDiscover = (type, page = 1, genre = '') => {
-        const params = { page, sort_by: 'popularity.desc' };
+        const params = { sort_by: 'popularity.desc' };
         if (genre) params.with_genres = genre;
-        return api(`/discover/${type}`, params);
+        return fetchMulti(`/discover/${type}`, params, page, 2);
     };
     
     // Anime API Functions (Filtered by Crunchyroll Watch Provider ID 283)
