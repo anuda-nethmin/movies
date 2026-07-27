@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="index.css?v=88">
+    <link rel="stylesheet" href="index.css?v=89">
     <link rel="icon" type="image/png" href="logo.png">
 </head>
 <body>
@@ -47,6 +47,14 @@
                 </a>
             </nav>
             <div class="header-actions">
+                <!-- Global Floating Search -->
+                <div id="global-search-container" class="global-search-container">
+                    <div class="global-search-wrapper">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="global-search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="global-search-input" class="global-search-input" placeholder="Search movies, tv, anime..." autocomplete="off">
+                    </div>
+                    <div id="global-search-suggestions" class="search-suggestions" style="display: none;"></div>
+                </div>
                 <a href="https://brave.com/" target="_blank" rel="noopener noreferrer" class="brave-tip">🛡️ For the best ad-free experience, use <strong>Brave Browser</strong></a>
                 <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
                     <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -62,15 +70,6 @@
                 </a>
             </div>
         </aside>
-
-        <!-- Global Floating Search -->
-        <div id="global-search-container" class="global-search-container">
-            <div class="global-search-wrapper">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="global-search-icon"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                <input type="text" id="global-search-input" class="global-search-input" placeholder="Search movies, tv, anime..." autocomplete="off">
-            </div>
-            <div id="global-search-suggestions" class="search-suggestions" style="display: none;"></div>
-        </div>
 
         <!-- Main Content Area -->
         <main id="main-content"></main>
@@ -121,6 +120,6 @@
 
 
 
-    <script src="app.js?v=29"></script>
+    <script src="app.js?v=30"></script>
 </body>
 </html>
