@@ -81,6 +81,48 @@
     background: #e2e8f0;
 }
 
+/* F1 Light Theme Overrides */
+[data-theme="light"] .f1-schedule-container,
+[data-theme="light"] .f1-standings-container,
+[data-theme="light"] .f1-player-box {
+    background: #ffffff;
+    border: 1px solid rgba(14, 165, 233, 0.4);
+    box-shadow: 0 0 25px rgba(14, 165, 233, 0.15), inset 0 0 10px rgba(14, 165, 233, 0.05);
+}
+[data-theme="light"] .f1-animated-bg {
+    background: radial-gradient(circle at top, #f8fafc 0%, #e2e8f0 100%);
+}
+[data-theme="light"] .f1-track-line {
+    background: rgba(0, 0, 0, 0.04);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+[data-theme="light"] .f1-car-anim {
+    opacity: 0.3;
+}
+[data-theme="light"] .f1-standing-card {
+    background: #f1f5f9;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+[data-theme="light"] .f1-standing-card:hover {
+    background: #e2e8f0;
+}
+[data-theme="light"] .f1-standing-pos {
+    color: rgba(0, 0, 0, 0.4);
+}
+[data-theme="light"] .f1-standing-name {
+    color: #0f172a;
+}
+[data-theme="light"] .f1-standing-team {
+    color: rgba(0, 0, 0, 0.5);
+}
+[data-theme="light"] .f1-countdown-unit {
+    background: #f1f5f9;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+[data-theme="light"] .f1-countdown-unit span {
+    color: #0f172a;
+}
+
 /* Theme Switcher UI */
 .header-actions {
     display: flex;
@@ -1366,7 +1408,7 @@ input { font-family: inherit; }
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
-    align-items: start;
+    align-items: stretch;
 }
 
 @media (max-width: 1300px) {
@@ -1802,9 +1844,202 @@ input { font-family: inherit; }
     50% { opacity: 0.5; }
 }
 
-.f1-schedule-section {
-    min-width: min(100%, 580px) !important;
-    max-width: 700px !important;
+/* --- Animated F1 Background --- */
+.f1-animated-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(circle at top, #111 0%, #050505 100%);
+}
+.f1-track-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: rgba(255,255,255,0.03);
+    box-shadow: 0 0 10px rgba(255,255,255,0.05);
+}
+.f1-car-anim {
+    position: absolute;
+    width: 250px;
+    height: 60px;
+    opacity: 0.15;
+    will-change: transform;
+    animation: f1SpeedAcross linear infinite;
+    filter: drop-shadow(15px 0 10px currentColor);
+}
+.f1-car-anim svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.f1-car-1 { top: 10%; animation-duration: 6s; animation-delay: 0s; color: #e80020; } /* Ferrari */
+.f1-car-2 { top: 35%; animation-duration: 4.5s; animation-delay: 2s; color: #00d2be; } /* Mercedes */
+.f1-car-3 { top: 60%; animation-duration: 5s; animation-delay: 1.5s; color: #ff8000; } /* McLaren */
+.f1-car-4 { top: 85%; animation-duration: 5.5s; animation-delay: 3s; color: #0600ef; } /* Red Bull */
+
+.f1-trailing-flag {
+    position: absolute;
+    right: -40px; /* Behind the SVG */
+    top: 50%;
+    transform-origin: left center;
+    width: 50px;
+    height: 30px;
+    margin-top: -15px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.8);
+    animation: waveFlag 0.4s infinite alternate ease-in-out;
+}
+.f1-trailing-flag::before {
+    content: '';
+    position: absolute;
+    left: -15px;
+    top: 50%;
+    width: 15px;
+    height: 2px;
+    background: #444;
+    transform: translateY(-50%);
+}
+
+@keyframes waveFlag {
+    0% { transform: scaleY(1) skewY(8deg); }
+    100% { transform: scaleY(0.85) skewY(-8deg); }
+}
+
+.flag-italy {
+    background: linear-gradient(to bottom, #009246 33.3%, #ffffff 33.3%, #ffffff 66.6%, #ce2b37 66.6%);
+}
+.flag-germany {
+    background: linear-gradient(to bottom, #000000 33.3%, #dd0000 33.3%, #dd0000 66.6%, #ffce00 66.6%);
+}
+.flag-uk {
+    background: 
+        linear-gradient(to bottom, transparent 42%, #c8102e 42%, #c8102e 58%, transparent 58%),
+        linear-gradient(to right, transparent 44%, #c8102e 44%, #c8102e 56%, transparent 56%),
+        linear-gradient(to bottom, transparent 38%, #ffffff 38%, #ffffff 62%, transparent 62%),
+        linear-gradient(to right, transparent 40%, #ffffff 40%, #ffffff 60%, transparent 60%),
+        linear-gradient(28deg, transparent 46%, #c8102e 46%, #c8102e 54%, transparent 54%),
+        linear-gradient(-28deg, transparent 46%, #c8102e 46%, #c8102e 54%, transparent 54%),
+        linear-gradient(28deg, transparent 43%, #ffffff 43%, #ffffff 57%, transparent 57%),
+        linear-gradient(-28deg, transparent 43%, #ffffff 43%, #ffffff 57%, transparent 57%),
+        #012169;
+}
+.flag-austria {
+    background: linear-gradient(to bottom, #ed2939 33.3%, #ffffff 33.3%, #ffffff 66.6%, #ed2939 66.6%);
+}
+
+@keyframes f1SpeedAcross {
+    0% { transform: translateX(100vw) skewX(-20deg); }
+    100% { transform: translateX(-350px) skewX(-20deg); }
+}
+
+.f1-3col-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    padding: 30px 48px;
+    align-items: stretch;
+    width: 100%;
+}
+.f1-col-side {
+    flex: 1;
+    display: flex;
+    min-width: 0;
+}
+.f1-col-side:first-child {
+    justify-content: flex-end;
+}
+.f1-col-side:last-child {
+    justify-content: flex-start;
+}
+.f1-col-center {
+    flex: 0 1 1100px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+@media (max-width: 1600px) {
+    .f1-3col-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    .f1-col-side {
+        width: 100%;
+        justify-content: center !important;
+    }
+}
+
+.f1-schedule-container {
+    width: max-content;
+    max-width: 100%;
+    background: #0a0a0a;
+    padding: 24px 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.25), inset 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.f1-standings-container {
+    width: 100%;
+    min-width: 320px;
+    max-width: 450px;
+    background: #0a0a0a;
+    padding: 24px 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.25), inset 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.f1-player-box {
+    background: #0a0a0a;
+    padding: 24px 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.25), inset 0 0 15px rgba(59, 130, 246, 0.1);
+}
+
+.f1-standing-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+    margin-bottom: 8px;
+    transition: all 0.2s;
+}
+.f1-standing-card:hover {
+    background: #181818;
+    transform: translateX(4px);
+}
+.f1-standing-pos {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.4);
+    min-width: 24px;
+}
+.f1-standing-details {
+    flex: 1;
+    min-width: 0;
+}
+.f1-standing-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.f1-standing-team {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.5);
+}
+.f1-standing-pts {
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: #3b82f6;
 }
 
 .f1-calendar-split {

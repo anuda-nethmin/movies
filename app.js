@@ -750,39 +750,98 @@
 
     async function renderF1() {
         mainContent.innerHTML = `
-            <div class="detail-page">
-                <div class="detail-backdrop-wrap">
-                    <div class="detail-backdrop" style="background-image: url('https://image.tmdb.org/t/p/original/rMqbXo2Pibx86Q0Xp7GvF4z5t21.jpg');"></div>
-                    <div class="detail-hero">
-                        <div class="detail-info">
-                            <h1 class="detail-title">Formula 1 Live Stream</h1>
-                            <p class="hero-overview" style="margin-top: 10px; max-width: 800px; color: var(--text-secondary);">
-                                Watch the latest Formula 1 Grand Prix live. The stream goes live 15 minutes before each session.
-                            </p>
-                        </div>
+            <div class="detail-page" style="position: relative; overflow: hidden; padding-top: 100px; min-height: 100vh;">
+                <!-- Animated Track Background -->
+                <div class="f1-animated-bg">
+                    <div class="f1-track-line" style="top: 25%;"></div>
+                    <div class="f1-track-line" style="top: 50%;"></div>
+                    <div class="f1-track-line" style="top: 75%;"></div>
+                    
+                    ${[
+                        { id: 1, flag: 'flag-italy' },    // Ferrari
+                        { id: 2, flag: 'flag-germany' },  // Mercedes
+                        { id: 3, flag: 'flag-uk' },       // McLaren
+                        { id: 4, flag: 'flag-austria' }   // Red Bull
+                    ].map(car => `
+                    <div class="f1-car-anim f1-car-${car.id}">
+                        <div class="f1-trailing-flag ${car.flag}"></div>
+                        <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                            <!-- Tires -->
+                            <rect x="20" y="10" width="30" height="12" rx="4" fill="#000" />
+                            <rect x="135" y="6" width="35" height="16" rx="4" fill="#000" />
+                            <rect x="20" y="78" width="30" height="12" rx="4" fill="#000" />
+                            <rect x="135" y="78" width="35" height="16" rx="4" fill="#000" />
+                            
+                            <!-- Front Wing -->
+                            <path d="M10,20 L10,80 Q10,85 15,85 L15,15 Q10,15 10,20 Z" />
+                            <rect x="15" y="20" width="5" height="60" />
+                            <path d="M15,15 L25,20 L25,80 L15,85 Z" opacity="0.8" />
+                            
+                            <!-- Nose -->
+                            <path d="M25,46 L25,54 L70,58 L70,42 Z" />
+                            
+                            <!-- Suspension -->
+                            <path d="M45,22 L50,42 M45,78 L50,58" stroke="currentColor" stroke-width="2" />
+                            <path d="M150,22 L160,35 M150,78 L160,65" stroke="currentColor" stroke-width="2" />
+                            
+                            <!-- Body & Sidepods -->
+                            <path d="M70,35 L70,65 L100,75 L135,75 L165,60 L165,40 L135,25 L100,25 Z" />
+                            
+                            <!-- Cockpit & Halo -->
+                            <rect x="85" y="42" width="25" height="16" rx="8" fill="#111" />
+                            <path d="M85,42 Q70,50 85,58" fill="none" stroke="currentColor" stroke-width="2" />
+                            <line x1="85" y1="50" x2="72" y2="50" stroke="currentColor" stroke-width="2" />
+                            
+                            <!-- Engine Cover -->
+                            <path d="M110,45 L110,55 L175,52 L175,48 Z" opacity="0.6"/>
+                            
+                            <!-- Rear Wing -->
+                            <rect x="175" y="30" width="8" height="40" rx="2" />
+                            <rect x="183" y="25" width="12" height="50" rx="2" />
+                        </svg>
                     </div>
+                    `).join('')}
                 </div>
                 
-                <div class="top-content-wrapper">
-                    <!-- Schedule on Left -->
-                    <div class="episodes-section f1-schedule-section" style="display: block;">
-                        <h2 class="detail-section-title" style="margin-top: 0; margin-bottom: 20px; font-size: 1.3rem;">\u{1F3CE}\u{FE0F} Race Calendar</h2>
-                        <div id="f1-countdown-wrap"></div>
-                        <div id="f1-calendar" class="f1-calendar">
-                            <div class="spinner-wrap"><div class="spinner"></div></div>
+                <div style="padding: 0 48px; position: relative; z-index: 2;">
+                    <h1 class="detail-title">Formula 1 Live Stream</h1>
+                    <p class="hero-overview" style="margin-top: 10px; max-width: 800px; color: var(--text-secondary);">
+                        Watch the latest Formula 1 Grand Prix live. The stream goes live 15 minutes before each session.
+                    </p>
+                </div>
+                
+                <div class="f1-3col-wrapper" style="position: relative; z-index: 2;">
+                    <!-- Left Side: Schedule -->
+                    <div class="f1-col-side">
+                        <div class="f1-schedule-container">
+                            <h2 class="detail-section-title" style="margin-top: 0; margin-bottom: 20px; font-size: 1.3rem;">\u{1F3CE}\u{FE0F} Race Calendar</h2>
+                            <div id="f1-countdown-wrap"></div>
+                            <div id="f1-calendar" class="f1-calendar">
+                                <div class="spinner-wrap"><div class="spinner"></div></div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Player in Center -->
-                    <div class="inline-player-wrapper" style="display: flex;">
+                    <!-- Center: Player -->
+                    <div class="f1-col-center inline-player-wrapper f1-player-box">
                         <div class="player-header">
                             <span class="now-playing-text">NOW PLAYING — F1 LIVE</span>
                         </div>
-                        <div class="f1-stream-container" style="width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); aspect-ratio: 16/9;">
+                        <div class="f1-stream-container" style="width: 100%; flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); aspect-ratio: 16/9;">
                             <iframe src="https://westreamf1.com/westreamf1.php" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true" height="100%" width="100%" style="border: none;"></iframe>
                         </div>
                         <div class="player-footer">
                             <div class="streaming-via">Streaming via WeStreamF1. If playback fails, the session may not be live yet.</div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side: Standings -->
+                    <div class="f1-col-side">
+                        <div class="f1-standings-container">
+                            <h2 class="detail-section-title" style="margin-top: 0; margin-bottom: 20px; font-size: 1.3rem;">\u{1F3C6} Championship</h2>
+                            <div id="f1-standings">
+                                <div class="spinner-wrap"><div class="spinner"></div></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -857,6 +916,49 @@
                     setInterval(tick, 1000);
                 }
             }
+
+            // Fetch Standings
+            try {
+                const stdRes = await fetch('https://api.jolpi.ca/ergast/f1/current/driverStandings.json');
+                const stdData = await stdRes.json();
+                const drivers = stdData.MRData.StandingsTable.StandingsLists[0].DriverStandings.slice(0, 10);
+                
+                const conRes = await fetch('https://api.jolpi.ca/ergast/f1/current/constructorStandings.json');
+                const conData = await conRes.json();
+                const constructors = conData.MRData.StandingsTable.StandingsLists[0].ConstructorStandings.slice(0, 5);
+
+                const stdEl = document.getElementById('f1-standings');
+                if (stdEl) {
+                    let html = '<h3 class="f1-col-title" style="margin-top:0;">Drivers (Top 10)</h3><div class="f1-col-list" style="max-height:350px;">';
+                    drivers.forEach(d => {
+                        html += `<div class="f1-standing-card">
+                            <div class="f1-standing-pos">${d.position}</div>
+                            <div class="f1-standing-details">
+                                <div class="f1-standing-name">${d.Driver.givenName} ${d.Driver.familyName}</div>
+                                <div class="f1-standing-team">${d.Constructors[0]?.name || ''}</div>
+                            </div>
+                            <div class="f1-standing-pts">${d.points} PTS</div>
+                        </div>`;
+                    });
+                    html += '</div><h3 class="f1-col-title" style="margin-top:20px;">Constructors (Top 5)</h3><div class="f1-col-list" style="max-height:200px;">';
+                    constructors.forEach(c => {
+                        html += `<div class="f1-standing-card constructor">
+                            <div class="f1-standing-pos">${c.position}</div>
+                            <div class="f1-standing-details">
+                                <div class="f1-standing-name">${c.Constructor.name}</div>
+                            </div>
+                            <div class="f1-standing-pts">${c.points} PTS</div>
+                        </div>`;
+                    });
+                    html += '</div>';
+                    stdEl.innerHTML = html;
+                }
+            } catch (e) {
+                console.error('Standings error', e);
+                const stdEl = document.getElementById('f1-standings');
+                if (stdEl) stdEl.innerHTML = '<div style="color:var(--text-muted)">Failed to load standings.</div>';
+            }
+
         } catch(e) {
             const c = document.getElementById('f1-calendar');
             if (c) c.innerHTML = '<p style="color:var(--text-muted);padding:20px;">Failed to load race calendar.</p>';
