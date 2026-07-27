@@ -15,7 +15,7 @@
         const type = item.title ? 'movie' : 'tv';
 
         return `
-        <div class="anime-list-item" onclick="window.location.hash='${type}/${item.id}'">
+        <div class="anime-list-item" onclick="window.location.hash='#/${type}/${item.id}'">
             <img class="anime-list-poster" src="${poster}" alt="${title}" loading="lazy">
             <div class="anime-list-info">
                 <div class="anime-list-title" title="${title}">${title}</div>
@@ -631,7 +631,7 @@
                             const type = item.media_type || (item.title ? 'movie' : 'tv');
                             
                             return `
-                            <div class="search-suggestion-item" onclick="window.location.hash='${type}/${item.id}'">
+                            <div class="search-suggestion-item" onclick="window.location.hash='#/${type}/${item.id}'">
                                 <img src="${poster}" class="search-suggestion-poster" alt="${title}">
                                 <div style="display: flex; flex-direction: column; gap: 4px; overflow: hidden;">
                                     <div class="search-suggestion-title">${title}</div>
