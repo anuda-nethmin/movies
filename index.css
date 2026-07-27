@@ -2533,6 +2533,18 @@ input { font-family: inherit; }
     appearance: none;
     padding-right: 16px;
 }
+.filter-search-input {
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    outline: none;
+    width: 150px;
+    padding: 4px;
+}
+.filter-search-input::placeholder {
+    color: var(--text-muted);
+}
 .filter-select option {
     background: var(--bg-secondary);
     color: var(--text-primary);

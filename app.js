@@ -405,6 +405,10 @@
                             <option value="first_air_date.desc">Newest</option>
                         </select>
                     </div>
+                    <div class="filter-group">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" class="filter-search-input" id="filter-search" placeholder="Search anime...">
+                    </div>
                 </div>
 
                 <div class="filter-section-title">Genre</div>
@@ -415,7 +419,9 @@
                 <button class="filter-submit-btn" id="filter-submit">Filter</button>
             </div>
 
-            <div id="anime-results-container">
+            <div id="anime-filter-results-container"></div>
+
+            <div id="anime-default-container">
                 ${skeletonHero()}
                 <div class="section"><div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>${skeletonCards()}</div>
                 <div class="section"><div class="section-header"><h2 class="section-title">Most <span class="accent">Popular</span></h2></div>${skeletonCards()}</div>
@@ -430,7 +436,7 @@
 
         // Handle Filter Submission
         document.getElementById('filter-submit').addEventListener('click', async () => {
-            const resultsContainer = document.getElementById('anime-results-container');
+            const resultsContainer = document.getElementById('anime-filter-results-container');
             resultsContainer.innerHTML = `<div id="anime-grid-spinner" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; padding: 48px; width: 100%;">
                 <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
             </div>`;
@@ -439,6 +445,7 @@
             const status = document.getElementById('filter-status').value;
             const score = document.getElementById('filter-score').value;
             const sort = document.getElementById('filter-sort').value;
+            const query = document.getElementById('filter-search').value.trim();
             
             let genres = ['16']; // Always include animation
             let keywords = [];
@@ -457,7 +464,18 @@
             if(status !== 'all') params.with_status = status;
             if(score !== 'all') params['vote_average.gte'] = score;
 
-            const endpoint = type === 'movie' ? '/discover/movie' : '/discover/tv';
+            let endpoint = type === 'movie' ? '/discover/movie' : '/discover/tv';
+            
+            // If text query, use search API and drop unsupported discover filters
+            if (query) {
+                endpoint = type === 'movie' ? '/search/movie' : '/search/tv';
+                params.query = query;
+                delete params.with_genres;
+                delete params.with_original_language;
+                delete params.sort_by;
+                delete params.with_keywords;
+                delete params.with_status;
+            }
             
             // Set up infinite scroll state
             animeFilterState = { endpoint, params, page: 1, loading: true };
@@ -474,7 +492,13 @@
                 ]);
                 animeFilterState.page = 2;
                 
-                const combined = [...page1.results, ...page2.results];
+                let combined = [...page1.results, ...page2.results];
+                
+                // If using search API, we must locally filter for anime (ja language and animation genre if possible)
+                if (query) {
+                    combined = combined.filter(item => item.original_language === 'ja' || (item.genre_ids && item.genre_ids.includes(16)));
+                }
+                
                 const uniqueResults = Array.from(new Map(combined.map(item => [item.id, item])).values());
                 
                 resultsContainer.innerHTML = `
@@ -484,8 +508,7 @@
                     <div id="anime-infinite-spinner" style="display:none; width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; margin-top: 20px;">
                         <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
                     </div>
-                </div>
-                ${footerHTML()}`;
+                </div>`;
                 
                 animeFilterState.loading = false;
                 
@@ -518,7 +541,11 @@
                 if (spinner) spinner.style.display = 'none';
                 
                 if (data.results && data.results.length > 0) {
-                    grid.innerHTML += data.results.map(i => cardHTML(i, true)).join('');
+                    let newResults = data.results;
+                    if (animeFilterState.params.query) {
+                        newResults = newResults.filter(item => item.original_language === 'ja' || (item.genre_ids && item.genre_ids.includes(16)));
+                    }
+                    grid.innerHTML += newResults.map(i => cardHTML(i, true)).join('');
                 } else if (animeFilterScrollHandler) {
                     window.removeEventListener('scroll', animeFilterScrollHandler);
                     animeFilterScrollHandler = null;
@@ -537,11 +564,12 @@
                 fetchAnimeCompleted()
             ]);
 
+            // Select a hero anime from top airing
             const hero = topAiring.results[0] || mostPopular.results[0];
-            const resultsContainer = document.getElementById('anime-results-container');
-            if (!resultsContainer) return;
+            const defaultContainer = document.getElementById('anime-default-container');
+            if (!defaultContainer) return;
 
-            resultsContainer.innerHTML = `
+            defaultContainer.innerHTML = `
                 ${heroHTML(hero)}
                 <div class="section">
                     <div class="section-header"><h2 class="section-title">Top Airing <span class="accent">Anime</span></h2></div>
@@ -563,8 +591,8 @@
             
             initCarousels();
         } catch (e) {
-            const resultsContainer = document.getElementById('anime-results-container');
-            if (resultsContainer) resultsContainer.innerHTML = `<div class="empty-state"><h3>Failed to load Anime</h3><p>${e.message}</p></div>`;
+            const defaultContainer = document.getElementById('anime-default-container');
+            if (defaultContainer) defaultContainer.innerHTML = `<div class="empty-state"><h3>Failed to load Anime</h3><p>${e.message}</p></div>`;
         }
     }
 
