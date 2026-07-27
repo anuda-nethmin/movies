@@ -763,18 +763,26 @@
                     </div>
                 </div>
                 
-                <div class="detail-body">
-                    <div class="detail-section">
-                        <div class="f1-stream-container" style="margin: 20px auto; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 900px; aspect-ratio: 16/9;">
-                            <iframe src="https://westreamf1.com/westreamf1.php" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true" height="100%" width="100%" style="border: none;"></iframe>
-                        </div>
-                    </div>
-
-                    <div class="detail-section" style="margin-top: 40px;">
-                        <h2 class="detail-section-title">\u{1F3CE}\u{FE0F} Race Calendar</h2>
+                <div class="top-content-wrapper">
+                    <!-- Schedule on Left -->
+                    <div class="episodes-section" style="display: block;">
+                        <h2 class="detail-section-title" style="margin-top: 0; margin-bottom: 20px; font-size: 1.3rem;">\u{1F3CE}\u{FE0F} Race Calendar</h2>
                         <div id="f1-countdown-wrap"></div>
                         <div id="f1-calendar" class="f1-calendar">
                             <div class="spinner-wrap"><div class="spinner"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Player in Center -->
+                    <div class="inline-player-wrapper" style="display: flex;">
+                        <div class="player-header">
+                            <span class="now-playing-text">NOW PLAYING — F1 LIVE</span>
+                        </div>
+                        <div class="f1-stream-container" style="width: 100%; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); aspect-ratio: 16/9;">
+                            <iframe src="https://westreamf1.com/westreamf1.php" loading="lazy" name="frame" scrolling="no" frameborder="no" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true" height="100%" width="100%" style="border: none;"></iframe>
+                        </div>
+                        <div class="player-footer">
+                            <div class="streaming-via">Streaming via WeStreamF1. If playback fails, the session may not be live yet.</div>
                         </div>
                     </div>
                 </div>
