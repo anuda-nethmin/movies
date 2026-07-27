@@ -516,7 +516,13 @@
             
             // If text query, use search API and drop unsupported discover filters
             if (query) {
-                endpoint = type === 'movie' ? '/search/movie' : '/search/tv';
+                if (type === 'all') {
+                    endpoint = '/search/multi';
+                } else if (type === 'movie') {
+                    endpoint = '/search/movie';
+                } else {
+                    endpoint = '/search/tv';
+                }
                 params.query = query;
                 delete params.with_genres;
                 delete params.with_original_language;
