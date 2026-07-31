@@ -1534,7 +1534,7 @@
         { name: 'MultiEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
         { name: 'AutoEmbed', getMovie: id => `https://autoembed.to/movie/tmdb/${id}`, getTv: (id, s, e) => `https://autoembed.to/tv/tmdb/${id}-${s}-${e}` },
         { name: '9anime', getMovie: id => `https://vidsrc.cc/v3/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.cc/v3/embed/tv/${id}/${s}/${e}` },
-        { name: 'SmashyStream', getMovie: id => `https://player.smashy.stream/movie/${id}`, getTv: (id, s, e) => `https://player.smashy.stream/tv/${id}?s=${s}&e=${e}` }
+        { name: 'SmashyStream', getMovie: id => `https://embed.smashystream.com/playere.php?tmdb=${id}`, getTv: (id, s, e) => `https://embed.smashystream.com/playere.php?tmdb=${id}&season=${s}&ep=${e}` }
     ];
 
     let currentVideoState = { id: null, type: null, serverIndex: 0, season: 1, episode: 1, episodesData: [] };
