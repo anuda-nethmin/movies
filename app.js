@@ -1526,10 +1526,14 @@
 
     // ========== INLINE VIDEO & TV LOGIC ==========
     const SERVERS = [
-        { name: 'VidSrc', getMovie: id => `https://vidsrc.to/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.to/embed/tv/${id}/${s}/${e}` },
-        { name: 'VidSrc.me', getMovie: id => `https://vidsrc.me/embed/movie?tmdb=${id}`, getTv: (id, s, e) => `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
-        { name: 'SuperEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
-        { name: '2Embed', getMovie: id => `https://www.2embed.cc/embed/${id}`, getTv: (id, s, e) => `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` }
+        { name: 'VidLink', getMovie: id => `https://vidlink.pro/movie/${id}?primaryColor=38bdf8&autoplay=false`, getTv: (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=38bdf8&autoplay=false` },
+        { name: 'VidSrc', getMovie: id => `https://vidsrc.net/embed/movie?tmdb=${id}`, getTv: (id, s, e) => `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
+        { name: 'Videasy', getMovie: id => `https://player.videasy.net/movie/${id}`, getTv: (id, s, e) => `https://player.videasy.net/tv/${id}/${s}/${e}` },
+        { name: 'VidSrc CC', getMovie: id => `https://vidsrc.cc/v3/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.cc/v3/embed/tv/${id}/${s}/${e}` },
+        { name: '2Embed', getMovie: id => `https://www.2embed.cc/embed/${id}`, getTv: (id, s, e) => `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` },
+        { name: 'MultiEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
+        { name: 'AutoEmbed', getMovie: id => `https://autoembed.to/movie/tmdb/${id}`, getTv: (id, s, e) => `https://autoembed.to/tv/tmdb/${id}-${s}-${e}` },
+        { name: 'Anime (AniWave)', getMovie: id => `https://vidsrc.cc/v3/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.cc/v3/embed/tv/${id}/${s}/${e}` }
     ];
 
     let currentVideoState = { id: null, type: null, serverIndex: 0, season: 1, episode: 1, episodesData: [] };
