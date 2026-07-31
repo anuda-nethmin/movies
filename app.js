@@ -1528,6 +1528,7 @@
     const SERVERS = [
         { name: 'VidLink', getMovie: id => `https://vidlink.pro/movie/${id}?primaryColor=38bdf8&autoplay=false`, getTv: (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=38bdf8&autoplay=false` },
         { name: 'Videasy', getMovie: id => `https://player.videasy.net/movie/${id}`, getTv: (id, s, e) => `https://player.videasy.net/tv/${id}/${s}/${e}` },
+        { name: 'VidSrc', getMovie: id => `https://vidsrc.net/embed/movie?tmdb=${id}`, getTv: (id, s, e) => `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
         { name: 'MultiEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
         { name: 'Anime (VidSrc)', getMovie: id => `https://vidsrc.icu/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.icu/embed/tv/${id}/${s}/${e}` }
     ];
