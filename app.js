@@ -1529,11 +1529,10 @@
         { name: 'VidLink', getMovie: id => `https://vidlink.pro/movie/${id}?primaryColor=38bdf8&autoplay=false`, getTv: (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=38bdf8&autoplay=false` },
         { name: 'VidSrc', getMovie: id => `https://vidsrc.net/embed/movie?tmdb=${id}`, getTv: (id, s, e) => `https://vidsrc.net/embed/tv?tmdb=${id}&season=${s}&episode=${e}` },
         { name: 'Videasy', getMovie: id => `https://player.videasy.net/movie/${id}`, getTv: (id, s, e) => `https://player.videasy.net/tv/${id}/${s}/${e}` },
-        { name: 'VidSrc CC', getMovie: id => `https://vidsrc.cc/v3/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.cc/v3/embed/tv/${id}/${s}/${e}` },
         { name: '2Embed', getMovie: id => `https://www.2embed.cc/embed/${id}`, getTv: (id, s, e) => `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` },
         { name: 'MultiEmbed', getMovie: id => `https://multiembed.mov/?video_id=${id}&tmdb=1`, getTv: (id, s, e) => `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
         { name: 'AutoEmbed', getMovie: id => `https://autoembed.to/movie/tmdb/${id}`, getTv: (id, s, e) => `https://autoembed.to/tv/tmdb/${id}-${s}-${e}` },
-        { name: '9anime', getMovie: id => `https://vidsrc.cc/v3/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.cc/v3/embed/tv/${id}/${s}/${e}` },
+        { name: 'Anime (VidSrc)', getMovie: id => `https://vidsrc.icu/embed/movie/${id}`, getTv: (id, s, e) => `https://vidsrc.icu/embed/tv/${id}/${s}/${e}` },
         { name: 'SmashyStream', getMovie: id => `https://embed.smashystream.com/playere.php?tmdb=${id}`, getTv: (id, s, e) => `https://embed.smashystream.com/playere.php?tmdb=${id}&season=${s}&ep=${e}` }
     ];
 
