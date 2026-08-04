@@ -336,6 +336,7 @@
                 case 'watchlist': renderWatchlist(); currentPage = 'watchlist'; break;
                 case 'f1': renderF1(); currentPage = 'f1'; break;
                 case 'anime': renderAnime(); currentPage = 'anime'; break;
+                case 'search': renderSearch(id); currentPage = 'search'; break;
                 default: renderHome(); currentPage = 'home';
             }
 
@@ -1059,6 +1060,91 @@
             if (spinner) spinner.style.display = 'none';
             browseIsLoading = false;
             if (!append) grid.innerHTML = `<div class="empty-state"><h3>Error</h3><p>${e.message}</p></div>`;
+        }
+    }
+
+    // ========== PAGE: SEARCH ==========
+    let searchScrollHandler = null;
+    let searchState = { page: 1, query: '', results: [] };
+    let searchIsLoading = false;
+
+    async function renderSearch(query) {
+        if (!query) {
+            mainContent.innerHTML = `<div class="empty-state"><h3>No search query provided</h3></div>`;
+            return;
+        }
+        query = decodeURIComponent(query);
+        
+        if (searchScrollHandler) {
+            window.removeEventListener('scroll', searchScrollHandler);
+            searchScrollHandler = null;
+        }
+
+        searchState = { page: 1, query, results: [] };
+        searchIsLoading = false;
+
+        mainContent.innerHTML = `
+            <div class="browse-page">
+                <h1 class="browse-title">Search Results for "${query}"</h1>
+                <div class="grid" id="search-grid"></div>
+                <div id="search-spinner" style="display:none; width: 100%; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 20px; margin-top: 20px;">
+                    <div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div><div class="skeleton-card"></div>
+                </div>
+                <button class="load-more-btn" id="search-load-more" style="display:none">Load More</button>
+            </div>
+            ${footerHTML()}`;
+
+        searchScrollHandler = () => {
+            if (searchIsLoading) return;
+            const scrollBottom = window.innerHeight + window.scrollY;
+            const docHeight = document.documentElement.scrollHeight;
+            if (scrollBottom >= docHeight - 600) {
+                searchState.page++;
+                loadSearchPage(true);
+            }
+        };
+        window.addEventListener('scroll', searchScrollHandler);
+
+        document.getElementById('search-load-more')?.addEventListener('click', () => {
+            searchState.page++;
+            loadSearchPage(true);
+        });
+
+        loadSearchPage();
+    }
+
+    async function loadSearchPage(append = false) {
+        const grid = document.getElementById('search-grid');
+        const spinner = document.getElementById('search-spinner');
+        const loadMore = document.getElementById('search-load-more');
+        if (!grid) return;
+        if (!append) grid.innerHTML = '';
+        searchIsLoading = true;
+        if (spinner) spinner.style.display = 'grid';
+        if (loadMore) loadMore.style.display = 'none';
+
+        try {
+            const data = await api('/search/multi', { query: searchState.query, page: searchState.page, include_adult: 'false' });
+            if (spinner) spinner.style.display = 'none';
+            const items = data.results.filter(i => (i.media_type === 'movie' || i.media_type === 'tv') && i.poster_path);
+            searchState.results.push(...items);
+            grid.innerHTML += items.map(i => cardHTML(i, true)).join('');
+            searchIsLoading = false;
+            
+            if (items.length === 0 && !append) {
+                grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><h3>No results found</h3><p>Try different keywords.</p></div>`;
+            }
+
+            if (data.page < data.total_pages) {
+                if (loadMore) loadMore.style.display = 'block';
+            } else if (searchScrollHandler) {
+                window.removeEventListener('scroll', searchScrollHandler);
+                searchScrollHandler = null;
+            }
+        } catch (e) {
+            if (spinner) spinner.style.display = 'none';
+            searchIsLoading = false;
+            if (!append) grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><h3>Error</h3><p>${e.message}</p></div>`;
         }
     }
 
@@ -1891,6 +1977,10 @@
             window.removeEventListener('scroll', animeFilterScrollHandler);
             animeFilterScrollHandler = null;
         }
+        if (typeof searchScrollHandler !== 'undefined' && searchScrollHandler) {
+            window.removeEventListener('scroll', searchScrollHandler);
+            searchScrollHandler = null;
+        }
         if (API_KEY) router();
     });
 
@@ -1959,9 +2049,11 @@
         globalSearchInput.addEventListener('keypress', (e) => {
             if(e.key === 'Enter') {
                 e.preventDefault();
-                const firstResult = globalSearchSuggestions.querySelector('.search-suggestion-item');
-                if(firstResult && !firstResult.textContent.includes('No results') && !firstResult.textContent.includes('Error')) {
-                    firstResult.click();
+                const query = globalSearchInput.value.trim();
+                if (query.length >= 2) {
+                    globalSearchSuggestions.style.display = 'none';
+                    globalSearchInput.blur();
+                    window.location.hash = '#/search/' + encodeURIComponent(query);
                 }
             }
         });
