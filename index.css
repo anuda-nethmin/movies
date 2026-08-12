@@ -1794,6 +1794,8 @@ input { font-family: inherit; }
     border-bottom-right-radius: 8px;
     max-height: 0;
     overflow-y: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
     opacity: 0;
     visibility: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1821,11 +1823,7 @@ input { font-family: inherit; }
     font-weight: 600;
 }
 .custom-dropdown-options::-webkit-scrollbar {
-    width: 6px;
-}
-.custom-dropdown-options::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 3px;
+    display: none;
 }
 
 .episodes-list {
