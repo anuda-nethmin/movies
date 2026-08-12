@@ -1638,12 +1638,7 @@
         document.getElementById('current-server-name').textContent = SERVERS[currentVideoState.serverIndex].name;
     }
 
-    mainContent.addEventListener('change', e => {
-        if (e.target.classList.contains('season-dropdown')) {
-            const sNum = parseInt(e.target.value);
-            loadEpisodesUI(currentVideoState.id, sNum);
-        }
-    });
+
 
     mainContent.addEventListener('click', e => {
         // Server switching
@@ -1685,7 +1680,23 @@
             return;
         }
 
+        // Custom Dropdown Header
+        const ddHeader = e.target.closest('.custom-dropdown-header');
+        if (ddHeader) {
+            ddHeader.closest('.custom-dropdown').classList.toggle('open');
+            return;
+        }
 
+        // Custom Dropdown Option
+        const ddOption = e.target.closest('.custom-dropdown-option');
+        if (ddOption) {
+            const dd = ddOption.closest('.custom-dropdown');
+            dd.classList.remove('open');
+            const sNum = parseInt(ddOption.dataset.value);
+            dd.querySelector('.custom-dropdown-selected').textContent = `Season ${sNum}`;
+            loadEpisodesUI(currentVideoState.id, sNum);
+            return;
+        }
 
         // Episode Square Click
         const epCard = e.target.closest('.episode-square');
@@ -1837,10 +1848,18 @@
         currentVideoState.season = targetSeason;
         currentVideoState.episode = targetEpisode;
         
-        toggles.innerHTML = `<select class="season-dropdown" id="season-dropdown">` + 
-            validSeasons.map(s => 
-                `<option value="${s.season_number}" ${s.season_number === targetSeason ? 'selected' : ''}>Season ${s.season_number}</option>`
-            ).join('') + `</select>`;
+        toggles.innerHTML = `
+            <div class="custom-dropdown" id="season-custom-dropdown">
+                <div class="custom-dropdown-header">
+                    <span class="custom-dropdown-selected">Season ${targetSeason}</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+                <div class="custom-dropdown-options">
+                    ${validSeasons.map(s => 
+                        `<div class="custom-dropdown-option ${s.season_number === targetSeason ? 'selected' : ''}" data-value="${s.season_number}">Season ${s.season_number}</div>`
+                    ).join('')}
+                </div>
+            </div>`;
         
         await loadEpisodesUI(id, targetSeason);
         
@@ -2048,6 +2067,9 @@
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#global-search-container')) {
                 globalSearchSuggestions.style.display = 'none';
+            }
+            if (!e.target.closest('.custom-dropdown')) {
+                document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
             }
         });
         
