@@ -1591,6 +1591,32 @@ input { font-family: inherit; }
     border-color: #f5c518;
 }
 
+.autoplay-toggle:hover {
+    color: #fff;
+}
+.autoplay-toggle.active {
+    color: #fff;
+}
+.autoplay-toggle.active svg {
+    fill: var(--primary);
+}
+
+.external-fullscreen-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.external-fullscreen-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
 .video-container {
     position: relative;
     padding-bottom: 56.25%; /* 16:9 Aspect Ratio */

@@ -1221,9 +1221,14 @@
                         <div id="inline-player-wrapper" class="inline-player-wrapper">
                             <div class="player-header">
                                 <span class="now-playing-text" id="now-playing-text">NOW PLAYING</span>
-                                <div class="autoplay-toggle">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="3" fill="#000"/></svg>
-                                    Autoplay next
+                                <div style="display:flex; gap:16px; align-items:center;">
+                                    <div class="autoplay-toggle">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="3" fill="#000"/></svg>
+                                        Autoplay next
+                                    </div>
+                                    <button onclick="document.querySelector('#inline-player-wrapper .video-container').requestFullscreen().catch(e=>console.log(e))" class="external-fullscreen-btn" title="Force Fullscreen">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                                    </button>
                                 </div>
                             </div>
                             <div class="server-list" id="inline-server-selector">
