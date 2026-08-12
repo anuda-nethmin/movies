@@ -1636,6 +1636,27 @@ input { font-family: inherit; }
     height: 100%;
 }
 
+.video-container:fullscreen {
+    padding-bottom: 0 !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+}
+.video-container:-webkit-full-screen {
+    padding-bottom: 0 !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+}
+.video-container:-moz-full-screen {
+    padding-bottom: 0 !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+}
+.video-container:-ms-fullscreen {
+    padding-bottom: 0 !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+}
+
 .player-footer {
     display: flex;
     flex-direction: column;
