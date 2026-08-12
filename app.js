@@ -1231,7 +1231,7 @@
                                 <!-- Servers injected here -->
                             </div>
                             <div class="video-container">
-                                <iframe id="inline-video-iframe" src="" frameborder="0" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true"></iframe>
+                                <iframe id="inline-video-iframe" src="" frameborder="0" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
                             </div>
                             <div class="player-footer">
                                 <div class="streaming-via">Streaming via <span id="current-server-name">VidLink</span>. If playback fails or shows ads, try a different server above.</div>
