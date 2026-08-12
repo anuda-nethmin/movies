@@ -1821,9 +1821,15 @@ input { font-family: inherit; }
     background: #eee;
     color: #000;
     font-weight: 600;
-}
 .custom-dropdown-options::-webkit-scrollbar {
-    display: none;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+}
+.custom-dropdown-options {
+    -ms-overflow-style: none !important;  /* IE and Edge */
+    scrollbar-width: none !important;  /* Firefox */
 }
 
 .episodes-list {
