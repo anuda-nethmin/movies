@@ -1633,6 +1633,13 @@
         document.getElementById('current-server-name').textContent = SERVERS[currentVideoState.serverIndex].name;
     }
 
+    mainContent.addEventListener('change', e => {
+        if (e.target.classList.contains('season-dropdown')) {
+            const sNum = parseInt(e.target.value);
+            loadEpisodesUI(currentVideoState.id, sNum);
+        }
+    });
+
     mainContent.addEventListener('click', e => {
         // Server switching
         if (e.target.classList.contains('server-pill')) {
@@ -1673,14 +1680,7 @@
             return;
         }
 
-        // Season Toggles
-        if (e.target.classList.contains('season-pill')) {
-            document.querySelectorAll('.season-pill').forEach(p => p.classList.remove('active'));
-            e.target.classList.add('active');
-            const sNum = parseInt(e.target.dataset.season);
-            loadEpisodesUI(currentVideoState.id, sNum);
-            return;
-        }
+
 
         // Episode Square Click
         const epCard = e.target.closest('.episode-square');
@@ -1832,9 +1832,10 @@
         currentVideoState.season = targetSeason;
         currentVideoState.episode = targetEpisode;
         
-        toggles.innerHTML = validSeasons.map((s, i) => 
-            `<button class="season-pill ${s.season_number === targetSeason ? 'active' : ''}" data-season="${s.season_number}">Season ${s.season_number}</button>`
-        ).join('');
+        toggles.innerHTML = `<select class="season-dropdown" id="season-dropdown">` + 
+            validSeasons.map(s => 
+                `<option value="${s.season_number}" ${s.season_number === targetSeason ? 'selected' : ''}>Season ${s.season_number}</option>`
+            ).join('') + `</select>`;
         
         await loadEpisodesUI(id, targetSeason);
         

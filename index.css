@@ -1700,27 +1700,31 @@ input { font-family: inherit; }
     padding-bottom: 4px;
 }
 
-.season-pill {
+.season-dropdown {
     background: #111;
     border: 1px solid #333;
-    color: #aaa;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
+    color: #eee;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.95rem;
     cursor: pointer;
-    white-space: nowrap;
+    font-family: inherit;
+    outline: none;
     transition: all 0.2s;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23aaaaaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
 }
 
-.season-pill:hover {
-    background: #222;
-    color: #fff;
+.season-dropdown:hover {
+    border-color: #555;
+    background-color: #222;
 }
 
-.season-pill.active {
-    background: #eee;
-    color: #000;
-    font-weight: 600;
+.season-dropdown:focus {
+    border-color: var(--primary);
 }
 
 .episodes-list {
@@ -2436,7 +2440,7 @@ input { font-family: inherit; }
         scrollbar-width: none;
     }
     .season-toggles::-webkit-scrollbar { display: none; }
-    .season-pill { padding: 5px 12px; font-size: 0.78rem; }
+    .season-dropdown { padding: 6px 12px; font-size: 0.85rem; }
 
     .episode-card {
         flex-direction: column;
