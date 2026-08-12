@@ -1680,20 +1680,11 @@
             return;
         }
 
-        // Custom Dropdown Header
-        const ddHeader = e.target.closest('.custom-dropdown-header');
-        if (ddHeader) {
-            ddHeader.closest('.custom-dropdown').classList.toggle('open');
-            return;
-        }
-
-        // Custom Dropdown Option
-        const ddOption = e.target.closest('.custom-dropdown-option');
-        if (ddOption) {
-            const dd = ddOption.closest('.custom-dropdown');
-            dd.classList.remove('open');
-            const sNum = parseInt(ddOption.dataset.value);
-            dd.querySelector('.custom-dropdown-selected').textContent = `Season ${sNum}`;
+        // Season Toggles
+        if (e.target.classList.contains('season-pill')) {
+            document.querySelectorAll('.season-pill').forEach(p => p.classList.remove('active'));
+            e.target.classList.add('active');
+            const sNum = parseInt(e.target.dataset.season);
             loadEpisodesUI(currentVideoState.id, sNum);
             return;
         }
@@ -1848,18 +1839,9 @@
         currentVideoState.season = targetSeason;
         currentVideoState.episode = targetEpisode;
         
-        toggles.innerHTML = `
-            <div class="custom-dropdown" id="season-custom-dropdown">
-                <div class="custom-dropdown-header">
-                    <span class="custom-dropdown-selected">Season ${targetSeason}</span>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="dropdown-chevron"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </div>
-                <div class="custom-dropdown-options">
-                    ${validSeasons.map(s => 
-                        `<div class="custom-dropdown-option ${s.season_number === targetSeason ? 'selected' : ''}" data-value="${s.season_number}">Season ${s.season_number}</div>`
-                    ).join('')}
-                </div>
-            </div>`;
+        toggles.innerHTML = validSeasons.map((s, i) => 
+            `<button class="season-pill ${s.season_number === targetSeason ? 'active' : ''}" data-season="${s.season_number}">Season ${s.season_number}</button>`
+        ).join('');
         
         await loadEpisodesUI(id, targetSeason);
         
@@ -2067,9 +2049,6 @@
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#global-search-container')) {
                 globalSearchSuggestions.style.display = 'none';
-            }
-            if (!e.target.closest('.custom-dropdown')) {
-                document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
             }
         });
         

@@ -1746,90 +1746,27 @@ input { font-family: inherit; }
     overflow-x: auto;
     padding-bottom: 4px;
 }
+.season-pill {
+    background: #111;
+    border: 1px solid #333;
+    color: #aaa;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
 
-.custom-dropdown {
-    position: relative;
-    width: 220px;
-    font-family: inherit;
-    user-select: none;
-    z-index: 10;
-}
-.custom-dropdown-header {
-    background: #111;
-    border: 1px solid #333;
-    color: #eee;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-.custom-dropdown-header:hover {
-    background: #222;
-    border-color: #555;
-}
-.custom-dropdown.open .custom-dropdown-header {
-    border-color: var(--primary);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-}
-.dropdown-chevron {
-    transition: transform 0.3s ease;
-}
-.custom-dropdown.open .dropdown-chevron {
-    transform: rotate(180deg);
-}
-.custom-dropdown-options {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: #111;
-    border: 1px solid #333;
-    border-top: none;
-    border-bottom-left-radius: 8px;
-    border-bottom-right-radius: 8px;
-    max-height: 0;
-    overflow-y: auto;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-}
-.custom-dropdown.open .custom-dropdown-options {
-    max-height: 300px;
-    opacity: 1;
-    visibility: visible;
-}
-.custom-dropdown-option {
-    padding: 12px 16px;
-    color: #ccc;
-    cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    font-size: 0.9rem;
-}
-.custom-dropdown-option:hover {
+.season-pill:hover {
     background: #222;
     color: #fff;
 }
-.custom-dropdown-option.selected {
+
+.season-pill.active {
     background: #eee;
     color: #000;
     font-weight: 600;
-.custom-dropdown-options::-webkit-scrollbar {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent !important;
-}
-.custom-dropdown-options {
-    -ms-overflow-style: none !important;  /* IE and Edge */
-    scrollbar-width: none !important;  /* Firefox */
 }
 
 .episodes-list {
@@ -2545,7 +2482,7 @@ input { font-family: inherit; }
         scrollbar-width: none;
     }
     .season-toggles::-webkit-scrollbar { display: none; }
-    .custom-dropdown { width: 100%; max-width: 250px; }
+    .season-pill { padding: 5px 12px; font-size: 0.78rem; }
 
     .episode-card {
         flex-direction: column;
