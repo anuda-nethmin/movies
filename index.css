@@ -1746,27 +1746,41 @@ input { font-family: inherit; }
     overflow-x: auto;
     padding-bottom: 4px;
 }
-.season-pill {
-    background: #111;
+.season-dropdown {
+    background: #0d0d0d;
     border: 1px solid #333;
-    color: #aaa;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
+    color: #eee;
+    padding: 10px 40px 10px 16px;
+    border-radius: 10px;
+    font-size: 0.95rem;
     cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.2s;
+    font-family: inherit;
+    font-weight: 500;
+    outline: none;
+    transition: all 0.25s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    min-width: 160px;
 }
 
-.season-pill:hover {
-    background: #222;
-    color: #fff;
+.season-dropdown:hover {
+    border-color: #555;
+    background-color: #1a1a1a;
 }
 
-.season-pill.active {
-    background: #eee;
-    color: #000;
-    font-weight: 600;
+.season-dropdown:focus {
+    border-color: #888;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.season-dropdown option {
+    background: #111;
+    color: #eee;
+    padding: 10px;
 }
 
 .episodes-list {
@@ -2163,6 +2177,9 @@ input { font-family: inherit; }
     background: #181818;
     transform: translateX(4px);
 }
+.f1-standing-card.constructor {
+    border-left: 3px solid #e10600;
+}
 .f1-standing-pos {
     font-size: 1.1rem;
     font-weight: 800;
@@ -2482,7 +2499,7 @@ input { font-family: inherit; }
         scrollbar-width: none;
     }
     .season-toggles::-webkit-scrollbar { display: none; }
-    .season-pill { padding: 5px 12px; font-size: 0.78rem; }
+    .season-dropdown { padding: 8px 36px 8px 12px; font-size: 0.85rem; min-width: 140px; }
 
     .episode-card {
         flex-direction: column;
@@ -2850,6 +2867,12 @@ input { font-family: inherit; }
     display: flex;
     align-items: center;
     gap: 6px;
+}
+.anime-list-meta .rating {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--accent);
 }
 .skeleton-list-item {
     height: 156px;

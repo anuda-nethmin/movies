@@ -590,7 +590,7 @@
         });
 
         // Handle Search and Filter Submit logic
-        let searchTimeout = null;
+        searchTimeout = null;
         
         const triggerSearch = async () => {
             if (searchTimeout) clearTimeout(searchTimeout);
@@ -1226,7 +1226,7 @@
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="8" width="18" height="8" rx="4"/><circle cx="16" cy="12" r="3" fill="#000"/></svg>
                                         Autoplay next
                                     </div>
-                                    <button onclick="document.querySelector('#inline-player-wrapper .video-container').requestFullscreen().catch(e=>console.log(e))" class="external-fullscreen-btn" title="Force Fullscreen">
+                                    <button onclick="var el=document.querySelector('#inline-player-wrapper .video-container');if(el){el.requestFullscreen().catch(function(e){console.log(e)});};" class="external-fullscreen-btn" title="Force Fullscreen">
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
                                     </button>
                                 </div>
@@ -1638,7 +1638,12 @@
         document.getElementById('current-server-name').textContent = SERVERS[currentVideoState.serverIndex].name;
     }
 
-
+    mainContent.addEventListener('change', e => {
+        if (e.target.classList.contains('season-dropdown')) {
+            const sNum = parseInt(e.target.value);
+            loadEpisodesUI(currentVideoState.id, sNum);
+        }
+    });
 
     mainContent.addEventListener('click', e => {
         // Server switching
@@ -1680,14 +1685,7 @@
             return;
         }
 
-        // Season Toggles
-        if (e.target.classList.contains('season-pill')) {
-            document.querySelectorAll('.season-pill').forEach(p => p.classList.remove('active'));
-            e.target.classList.add('active');
-            const sNum = parseInt(e.target.dataset.season);
-            loadEpisodesUI(currentVideoState.id, sNum);
-            return;
-        }
+
 
         // Episode Square Click
         const epCard = e.target.closest('.episode-square');
@@ -1839,9 +1837,10 @@
         currentVideoState.season = targetSeason;
         currentVideoState.episode = targetEpisode;
         
-        toggles.innerHTML = validSeasons.map((s, i) => 
-            `<button class="season-pill ${s.season_number === targetSeason ? 'active' : ''}" data-season="${s.season_number}">Season ${s.season_number}</button>`
-        ).join('');
+        toggles.innerHTML = `<select class="season-dropdown" id="season-dropdown">` + 
+            validSeasons.map(s => 
+                `<option value="${s.season_number}" ${s.season_number === targetSeason ? 'selected' : ''}>Season ${s.season_number}</option>`
+            ).join('') + `</select>`;
         
         await loadEpisodesUI(id, targetSeason);
         
@@ -1894,10 +1893,10 @@
         switch(e.key) {
             case 'f':
             case 'F': {
-                const iframe = document.getElementById('inline-video-iframe');
-                if (iframe) {
-                    if (iframe.requestFullscreen) iframe.requestFullscreen();
-                    else if (iframe.webkitRequestFullscreen) iframe.webkitRequestFullscreen();
+                const vc = document.querySelector('#inline-player-wrapper .video-container');
+                if (vc) {
+                    if (vc.requestFullscreen) vc.requestFullscreen().catch(e => console.log(e));
+                    else if (vc.webkitRequestFullscreen) vc.webkitRequestFullscreen();
                 }
                 break;
             }
@@ -1912,9 +1911,9 @@
                         currentVideoState.episode = nextEp.episode_number;
                         updateInlineVideoFrame();
                         // Highlight episode card
-                        const card = document.querySelector(`.episode-card[data-episode="${nextEp.episode_number}"]`);
+                        const card = document.querySelector(`.episode-square[data-episode="${nextEp.episode_number}"]`);
                         if (card) {
-                            document.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+                            document.querySelectorAll('.episode-square').forEach(c => c.classList.remove('active'));
                             card.classList.add('active');
                         }
                     }
@@ -1925,9 +1924,9 @@
                 if (currentVideoState.type === 'tv' && currentVideoState.episode > 1) {
                     currentVideoState.episode--;
                     updateInlineVideoFrame();
-                    const card = document.querySelector(`.episode-card[data-episode="${currentVideoState.episode}"]`);
+                    const card = document.querySelector(`.episode-square[data-episode="${currentVideoState.episode}"]`);
                     if (card) {
-                        document.querySelectorAll('.episode-card').forEach(c => c.classList.remove('active'));
+                        document.querySelectorAll('.episode-square').forEach(c => c.classList.remove('active'));
                         card.classList.add('active');
                     }
                 }
